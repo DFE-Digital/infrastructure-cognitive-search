@@ -44,9 +44,9 @@ public sealed class DefaultGeoLocationService : IGeoLocationService
     /// <param name="location">
     /// The location string on which to establish the basis of the search.
     /// </param>
-    /// <returns><
+    /// <returns>
     /// A configured T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByGeoLocation.Model.GeoLocationServiceResponse instance.
-    /// /returns>
+    /// </returns>
     /// <exception cref="JsonException">
     /// Exception thrown if a success status is returned with an invalid JSON response.
     /// </exception>
