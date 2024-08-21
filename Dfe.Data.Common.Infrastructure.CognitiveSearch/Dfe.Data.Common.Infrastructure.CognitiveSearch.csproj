@@ -22,21 +22,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Tests\**"/>
-    <EmbeddedResource Remove="Tests\**"/>
-    <None Remove="Tests\**"/>
+    <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <None Remove="Tests\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="../README.md" Pack="true" PackagePath="\"/>
+    <None Include="../README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Search.Documents" Version="11.4.0"/>
-    <PackageReference Include="Microsoft.Azure.Search.Service" Version="10.1.0"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2"/>
-    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>
-    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2"/>
+    <PackageReference Include="Azure.Search.Documents" Version="11.4.0" />
+    <PackageReference Include="Microsoft.Azure.Search.Service" Version="10.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
   </ItemGroup>
 
 </Project>
