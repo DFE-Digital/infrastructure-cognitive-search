@@ -5,12 +5,12 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering;
 /// <summary>
 /// 
 /// </summary>
-public interface ISearchFilterExpressionBuilder
+public interface ISearchFilterExpressionsBuilder
 {
     /// <summary>
     /// 
     /// </summary>
     /// <param name="searchFilterContexts"></param>
     /// <returns></returns>
-    string BuildSearchFilter(IEnumerable<SearchFilterContext> searchFilterContexts);
+    string BuildSearchFilterExpressions(IEnumerable<SearchFilterContext> searchFilterContexts);
 }

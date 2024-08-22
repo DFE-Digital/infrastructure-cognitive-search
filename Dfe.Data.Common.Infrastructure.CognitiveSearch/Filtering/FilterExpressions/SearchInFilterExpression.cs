@@ -28,7 +28,7 @@ public sealed class SearchInFilterExpression : ISearchFilterExpression
     /// <param name="searchFilterContext"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public string CreateFilterExpression(SearchFilterContext searchFilterContext)
+    public string GetFilterExpression(SearchFilterContext searchFilterContext)
     {
         ArgumentNullException.ThrowIfNull(searchFilterContext);
 

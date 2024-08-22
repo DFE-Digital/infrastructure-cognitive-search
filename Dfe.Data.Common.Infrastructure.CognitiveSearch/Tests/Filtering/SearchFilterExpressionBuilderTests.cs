@@ -2,9 +2,13 @@
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions.Context;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions.Factories;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.LogicalOperators.Factories;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.Options;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.FilterExpressions;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.FilterExpressions.StubBuilders;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.TestDoubles.StubBuilders;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Search.TestDoubles;
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering;
@@ -21,7 +25,22 @@ public class SearchFilterExpressionBuilderTests
         ILogicalOperatorFactory logicalOperatorFactory =
             LogicalOperatorFactoryTestDouble.MockLogicalOperatorFactory();
 
-        SearchFilterExpressionBuilder searchFilterExpressionBuilder = new(searchFilterExpressionFactory, logicalOperatorFactory);
+        FilterKeyToFilterExpressionMapOptions filterKeyToFilterExpressionMapOptions =
+                new FilterKeyToFilterExpressionMapOptionsBuilder()
+                    .WithDefaultLogicalOperator(defaultLogicalOperatorKey: "AndLogicalOperator")
+                    .WithSearchFilterToExpressionMap(searchFilterToExpressionMap: new Dictionary<string, string>()
+                    {
+                        { "OFSTEDRATINGCODE", "SearchInFilterExpression"},
+                        { "RELIGIOUSCHARACTERCODE", "SearchInFilterExpression" },
+                        { "GEODISTANCE", "LessThanOrEqualToExpression" },
+                        { "GEOLOCATION", "SearchGeoLocationFilterExpression" }
+                    })
+                    .Create();
+
+        IOptions<FilterKeyToFilterExpressionMapOptions> options =
+            IOptionsTestDouble.IOptionsMockFor(filterKeyToFilterExpressionMapOptions);
+
+        SearchFilterExpressionsBuilder searchFilterExpressionBuilder = new(searchFilterExpressionFactory, logicalOperatorFactory, options);
 
         List<SearchFilterContext> searchFilterContexts =
             SearchFilterContextBuilder.Create().BuildSearchFilterContextsWith(
@@ -32,7 +51,7 @@ public class SearchFilterExpressionBuilderTests
 
         // act.
         string searchFilterResult =
-            searchFilterExpressionBuilder.BuildSearchFilter(searchFilterContexts);
+            searchFilterExpressionBuilder.BuildSearchFilterExpressions(searchFilterContexts);
 
         // assert.
         searchFilterResult.Should().NotBeNullOrWhiteSpace(searchFilterResult);

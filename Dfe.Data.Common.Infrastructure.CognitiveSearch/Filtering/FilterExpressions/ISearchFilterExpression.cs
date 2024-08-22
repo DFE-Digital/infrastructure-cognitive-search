@@ -12,5 +12,5 @@ public interface ISearchFilterExpression
     /// </summary>
     /// <param name="searchFilterContext"></param>
     /// <returns></returns>
-    string CreateFilterExpression(SearchFilterContext searchFilterContext);
+    string GetFilterExpression(SearchFilterContext searchFilterContext);
 }

@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.FilterExpressions.Formatters;
 
-public class DefaultFilterExpressionFormatterTests
+public sealed class DefaultFilterExpressionFormatterTests
 {
     [Theory]
     [InlineData(new object[] { "one" }, "'{0}'", "'one'")]
@@ -62,6 +62,7 @@ public class DefaultFilterExpressionFormatterTests
     [InlineData(new object[] { "one", "two" }, "{0}{1}")]
     [InlineData(new object[] { 1 }, "{0}")]
     [InlineData(new object[] { }, "")]
+    
     public void CreateFilterCriteriaPlaceholders_WithoutExpressionParamsSeparatorSet_ReturnsUnseparatedParameteriseString(object[] input, string expectedResult)
     {
         // arrange

@@ -27,7 +27,7 @@ public sealed class LessThanOrEqualToExpression : ISearchFilterExpression
     /// </summary>
     /// <param name="searchFilterContext"></param>
     /// <returns></returns>
-    public string CreateFilterExpression(SearchFilterContext searchFilterContext)
+    public string GetFilterExpression(SearchFilterContext searchFilterContext)
     {
         ArgumentNullException.ThrowIfNull(searchFilterContext);
 

@@ -16,5 +16,5 @@ public sealed class AndLogicalOperator : ILogicalOperator
     /// 
     /// </summary>
     /// <returns></returns>
-    public string CreateLogicalOperator() => LogicOperator.PadSides();
+    public string GetOperatorExpression() => LogicOperator.PadSides();
 }

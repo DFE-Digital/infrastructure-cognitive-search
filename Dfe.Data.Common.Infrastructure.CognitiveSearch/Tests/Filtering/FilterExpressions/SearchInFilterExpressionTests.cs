@@ -16,7 +16,7 @@ public sealed class SearchInFilterExpressionTests
         const string expected = "search.in(facet, 'value1,value2')";
 
         // act
-        var result = filterExpression.CreateFilterExpression(context);
+        var result = filterExpression.GetFilterExpression(context);
 
         // assert
         Assert.Equal(expected, result);
@@ -32,6 +32,6 @@ public sealed class SearchInFilterExpressionTests
         var context = new SearchFilterContext("facet", [true]);
 
         // act, assert
-        Assert.Throws<ArgumentException>(() => filterExpression.CreateFilterExpression(context));
+        Assert.Throws<ArgumentException>(() => filterExpression.GetFilterExpression(context));
     }
 }

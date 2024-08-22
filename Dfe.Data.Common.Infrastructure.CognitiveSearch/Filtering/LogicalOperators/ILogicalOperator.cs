@@ -9,5 +9,5 @@ public interface ILogicalOperator
     /// 
     /// </summary>
     /// <returns></returns>
-    string CreateLogicalOperator();
+    string GetOperatorExpression();
 }

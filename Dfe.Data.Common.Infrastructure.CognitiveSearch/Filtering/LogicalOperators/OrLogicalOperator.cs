@@ -16,6 +16,6 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.LogicalOperat
         /// 
         /// </summary>
         /// <returns></returns>
-        public string CreateLogicalOperator() => LogicOperator.PadSides();
+        public string GetOperatorExpression() => LogicOperator.PadSides();
     }
 }
