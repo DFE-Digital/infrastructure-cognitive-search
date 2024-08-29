@@ -1,9 +1,9 @@
-﻿namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions.Context;
+﻿namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering;
 
 /// <summary>
 /// 
 /// </summary>
-public sealed class SearchFilterRequest
+public sealed record SearchFilterRequest
 {
     /// <summary>
     /// 

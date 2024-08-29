@@ -1,5 +1,4 @@
-﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions.Context;
-using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions.Formatters;
+﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions.Formatters;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions;
 

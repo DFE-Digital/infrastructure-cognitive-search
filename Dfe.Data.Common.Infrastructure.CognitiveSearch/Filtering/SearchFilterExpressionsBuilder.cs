@@ -1,5 +1,4 @@
 ﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions;
-using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions.Context;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions.Factories;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.LogicalOperators;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.LogicalOperators.Factories;

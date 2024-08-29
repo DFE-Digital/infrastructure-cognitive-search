@@ -1,4 +1,4 @@
-﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions.Context;
+﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.FilterExpressions.StubBuilders;
 
