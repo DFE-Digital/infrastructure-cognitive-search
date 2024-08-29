@@ -1,4 +1,11 @@
-﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByGeoLocation;
+﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions.Factories;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpressions.Formatters;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.LogicalOperators;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.LogicalOperators.Factories;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.Options;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByGeoLocation;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByGeoLocation.Options;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByGeoLocation.Providers;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
@@ -12,7 +19,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch;
 
 /// <summary>
 /// The composition root provides a unified location in the application where the composition
-/// of the object graphs for the application take place, using the dependency injection (IOC).
+/// of the object graphs for the application take place, using the IOC container.
 /// </summary>
 public static class CompositionRoot
 {
@@ -76,5 +83,80 @@ public static class CompositionRoot
 
             config.DefaultRequestHeaders.Clear();
         });
+    }
+
+    /// <summary>
+    /// Extension method which provides all the pre-registrations required to
+    /// access azure search filter services, and perform filtered searches across provisioned indexes.
+    /// </summary>
+    /// <param name="services">
+    /// The originating application services onto which to register the search dependencies.
+    /// </param>
+    /// <param name="configuration">
+    /// The originating configuration block from which to derive search service settings.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// The exception thrown if no valid T:Microsoft.Extensions.DependencyInjection.IServiceCollection
+    /// is provisioned.
+    /// </exception>
+    public static void AddDefaultSearchFilterServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        if (services is null)
+        {
+            throw new ArgumentNullException(nameof(services),
+                "A service collection is required to configure the azure cognitive search filter dependencies.");
+        }
+
+        services.TryAddScoped<IFilterExpressionFormatter, DefaultFilterExpressionFormatter>();
+        services.TryAddScoped<AndLogicalOperator>();
+        services.TryAddScoped<OrLogicalOperator>();
+        services.TryAddScoped<SearchInFilterExpression>();
+        services.TryAddScoped<SearchGeoLocationFilterExpression>();
+        services.TryAddScoped<LessThanOrEqualToExpression>();
+        services.TryAddScoped<ISearchFilterExpressionsBuilder, SearchFilterExpressionsBuilder>();
+
+        services.TryAddSingleton<ISearchFilterExpressionFactory>(provider =>
+        {
+            var scopedSearchFilterExpressionProvider = provider.CreateScope();
+            var searchFilterExpressions =
+                new Dictionary<string, Func<ISearchFilterExpression>>()
+                {
+                    ["SearchInFilterExpression"] = () =>
+                        scopedSearchFilterExpressionProvider
+                            .ServiceProvider.GetRequiredService<SearchInFilterExpression>(),
+                    ["LessThanOrEqualToExpression"] = () =>
+                        scopedSearchFilterExpressionProvider
+                            .ServiceProvider.GetRequiredService<LessThanOrEqualToExpression>(),
+                    ["SearchGeoLocationFilterExpression"] = () =>
+                        scopedSearchFilterExpressionProvider.
+                            ServiceProvider.GetRequiredService<SearchGeoLocationFilterExpression>()
+                };
+
+            return new SearchFilterExpressionFactory(searchFilterExpressions);
+        });
+
+        services.TryAddSingleton<ILogicalOperatorFactory>(provider =>
+        {
+            var scopedSearchFilterExpressionProvider = provider.CreateScope();
+            var logicalOperators =
+                new Dictionary<string, Func<ILogicalOperator>>()
+                {
+                    ["AndLogicalOperator"] = () =>
+                           scopedSearchFilterExpressionProvider
+                               .ServiceProvider.GetRequiredService<AndLogicalOperator>(),
+                    ["OrLogicalOperator"] = () =>
+                        scopedSearchFilterExpressionProvider
+                            .ServiceProvider.GetRequiredService<OrLogicalOperator>()
+                };
+
+            return new LogicalOperatorFactory(logicalOperators);
+        });
+
+        services.AddOptions<FilterKeyToFilterExpressionMapOptions>()
+            .Configure<IConfiguration>(
+                (settings, configuration) =>
+                    configuration
+                        .GetSection("AzureCognitiveSearchOptions:SearchEstablishment:FilterKeyToFilterExpressionMapOptions")
+                        .Bind(settings));
     }
 }

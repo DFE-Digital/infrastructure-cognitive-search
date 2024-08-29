@@ -47,11 +47,10 @@ public sealed class SearchGeoLocationFilterExpression : ISearchFilterExpression
 
         _filterExpressionFormatter.SetExpressionParamsSeparator(" ");
 
-        return
-            _filterExpressionFormatter
-                .CreateFormattedExpression(
-                    "geo.distance(Location,geography'POINT(" +
-                    $"{_filterExpressionFormatter.CreateFilterCriteriaPlaceholders(searchFilterContext.FacetedValues)})')",
-                    searchFilterContext.FacetedValues);
+        return _filterExpressionFormatter
+            .CreateFormattedExpression(
+                "geo.distance(Location,geography'POINT(" +
+                $"{_filterExpressionFormatter.CreateFilterCriteriaPlaceholders(searchFilterContext.FacetedValues)})')",
+                searchFilterContext.FacetedValues);
     }
 }
