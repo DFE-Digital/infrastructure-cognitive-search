@@ -26,34 +26,4 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.TestDou
             return this;
         }
     }
-
-    #region TO BE REMOVED
-    //private SearchFilterKeyToFilterExpressionMap GetFilterExpressionMap()
-    //{
-    //    var searchFilterToExpressionMap = new Dictionary<string, string>()
-    //    {
-    //        { "OFSTEDRATINGCODE", "SearchInFilterExpression"},
-    //        { "RELIGIOUSCHARACTERCODE", "SearchInFilterExpression" },
-    //        { "GEODISTANCE", "LessThanOrEqualToExpression" },
-    //        { "GEOLOCATION", "SearchGeoLocationFilterExpression" }
-    //    };
-
-    //    return new SearchFilterKeyToFilterExpressionMap("AndLogicalOperator", searchFilterToExpressionMap);
-    //}
-
-    //internal class SearchFilterKeyToFilterExpressionMap
-    //{
-    //    public SearchFilterKeyToFilterExpressionMap(
-    //        string defaultLogicalOperator,
-    //        IDictionary<string, string> searchFilterToExpressionMap)
-    //    {
-    //        DefaultLogicalOperator = defaultLogicalOperator;
-    //        SearchFilterToExpressionMap = searchFilterToExpressionMap;
-    //    }
-
-    //    public string DefaultLogicalOperator { get; }
-
-    //    public IDictionary<string, string> SearchFilterToExpressionMap { get; }
-    //}
-    #endregion
 }

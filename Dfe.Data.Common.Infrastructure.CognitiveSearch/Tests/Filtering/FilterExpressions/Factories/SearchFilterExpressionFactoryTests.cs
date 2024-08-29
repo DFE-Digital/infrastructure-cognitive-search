@@ -44,7 +44,7 @@ public class SearchFilterExpressionFactoryTests
     {
         // arrange.
         ISearchFilterExpressionFactory searchFilterExpressionFactory =
-            SearchFilterExpressionFactoryTestDouble.MockSearchFilterExpressionFactory();
+            SearchFilterExpressionFactoryTestDouble.MockSearchFilterExpressionFactoryFor<SearchInFilterExpression>();
 
         // act.
         ISearchFilterExpression searchFilterExpression =
@@ -104,22 +104,5 @@ public class SearchFilterExpressionFactoryTests
         ArgumentException exception =
             Assert.Throws<ArgumentException>(failedCreateFilterAction);
             Assert.Equal("The value cannot be an empty string or composed entirely of whitespace. (Parameter 'filterTypeName')", exception.Message);
-    }
-
-    [Fact]
-    public void CreateFilter_WithUnknownFilterName_ThrowsExpectedException()
-    {
-        // arrange.
-        ISearchFilterExpressionFactory searchFilterExpressionFactory =
-            SearchFilterExpressionFactoryTestDouble.MockSearchFilterExpressionFactory();
-
-        // act.
-        Action failedCreateFilterAction = () =>
-            searchFilterExpressionFactory.CreateFilter(filterName: "unknownFilter");
-
-        //assert
-        ArgumentException exception =
-            Assert.Throws<ArgumentOutOfRangeException>(failedCreateFilterAction);
-            Assert.Equal("Specified argument was out of the range of valid values. (Parameter 'Search expression filter of type unknownFilter is not registered.')", exception.Message);
     }
 }

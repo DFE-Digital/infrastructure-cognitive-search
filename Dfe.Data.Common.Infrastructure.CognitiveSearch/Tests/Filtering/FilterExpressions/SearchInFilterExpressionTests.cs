@@ -8,12 +8,13 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.FilterE
 public sealed class SearchInFilterExpressionTests
 {
     [Fact]
-    public void MultipleFacetValues_ReturnsFormattedInExpression()
+    public void GetFilterExpression_MultipleFacetValues_ReturnsFormattedInExpression()
     {
         // arrange
         SearchInFilterExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterContext context = new("facet", ["value1", "value2" ]);
-        const string expected = "search.in(facet, 'value1,value2')";
+        SearchFilterContext context = new("facet", ["value1", "value2", "value3"]);
+
+        const string expected = "search.in(facet, 'value1,value2,value3')";
 
         // act
         var result = filterExpression.GetFilterExpression(context);
@@ -23,7 +24,7 @@ public sealed class SearchInFilterExpressionTests
     }
 
     [Fact]
-    public void BoolFacetValues_Throws()
+    public void GetFilterExpression_BoolFacetValues_ThrowsArgumentException()
     {
         // arrange
         var filterExpression = new SearchInFilterExpression(
@@ -33,5 +34,18 @@ public sealed class SearchInFilterExpressionTests
 
         // act, assert
         Assert.Throws<ArgumentException>(() => filterExpression.GetFilterExpression(context));
+    }
+
+    [Fact]
+    public void Ctor_NullFilterExpressionFormatter_ThrowsArgumentException()
+    {
+        // arrange/act.
+        Action failedCtorAction = () =>
+            new SearchInFilterExpression(filterExpressionFormatter: null!);
+
+        //assert
+        ArgumentException exception =
+            Assert.Throws<ArgumentNullException>(failedCtorAction);
+        Assert.Equal("Value cannot be null. (Parameter 'filterExpressionFormatter')", exception.Message);
     }
 }

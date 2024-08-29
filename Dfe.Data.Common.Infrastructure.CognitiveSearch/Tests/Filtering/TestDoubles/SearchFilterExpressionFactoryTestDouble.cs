@@ -16,33 +16,62 @@ internal static class SearchFilterExpressionFactoryTestDouble
     {
         var searchFilterExpressionFactoryMock = SearchFilterExpressionFactoryMock();
 
-        _ = searchFilterExpressionFactoryMock
+        searchFilterExpressionFactoryMock
             .Setup(searchFilterExpressionFactory =>
                 searchFilterExpressionFactory
                     .CreateFilter(It.IsAny<string>()))
                         .Returns((string type) =>
-                        {
-                            ISearchFilterExpression searchFilterExpression = null!;
+                            GetSearchFilterExpression(type, filterExpressionFormatter));
 
-                            switch (type)
-                            {
-                                case "SearchInFilterExpression":
-                                    searchFilterExpression =
-                                        new SearchInFilterExpression(filterExpressionFormatter);
-                                    break;
-                                case "LessThanOrEqualToExpression":
-                                    searchFilterExpression =
-                                        new LessThanOrEqualToExpression(filterExpressionFormatter);
-                                    break;
-                                case "SearchGeoLocationFilterExpression":
-                                    searchFilterExpression =
-                                        new SearchGeoLocationFilterExpression(filterExpressionFormatter);
-                                    break;
-                            }
-
-                            return searchFilterExpression;
-                        });
+        searchFilterExpressionFactoryMock
+            .Setup(searchFilterExpressionFactory =>
+                searchFilterExpressionFactory
+                    .CreateFilter(It.IsAny<Type>()))
+                        .Returns((Type type) =>
+                            GetSearchFilterExpression(type.Name, filterExpressionFormatter));
 
         return searchFilterExpressionFactoryMock.Object;
+    }
+
+    public static ISearchFilterExpressionFactory MockSearchFilterExpressionFactoryFor<TFilterType>()
+    {
+        var searchFilterExpressionFactoryMock = SearchFilterExpressionFactoryMock();
+
+        searchFilterExpressionFactoryMock
+            .Setup(searchFilterExpressionFactory =>
+                searchFilterExpressionFactory
+                    .CreateFilter<ISearchFilterExpression>())
+                        .Returns(() =>
+                            GetSearchFilterExpression(
+                                typeof(TFilterType).Name,
+                                new DefaultFilterExpressionFormatter()));
+
+        return searchFilterExpressionFactoryMock.Object;
+    }
+
+    private static ISearchFilterExpression GetSearchFilterExpression(
+        string filterTypeName,
+        IFilterExpressionFormatter filterExpressionFormatter)
+    {
+        ISearchFilterExpression searchFilterExpression = null!;
+
+        switch (filterTypeName)
+        {
+            case "SearchInFilterExpression":
+                searchFilterExpression =
+                    new SearchInFilterExpression(filterExpressionFormatter);
+                break;
+            case "LessThanOrEqualToExpression":
+                searchFilterExpression =
+                    new LessThanOrEqualToExpression(filterExpressionFormatter);
+                break;
+            case "SearchGeoLocationFilterExpression":
+                searchFilterExpression =
+                    new SearchGeoLocationFilterExpression(filterExpressionFormatter);
+                break;
+        }
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(filterTypeName);
+
+        return searchFilterExpression;
     }
 }

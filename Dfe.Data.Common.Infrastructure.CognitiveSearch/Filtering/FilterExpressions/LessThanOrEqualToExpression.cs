@@ -31,12 +31,21 @@ public sealed class LessThanOrEqualToExpression : ISearchFilterExpression
     {
         ArgumentNullException.ThrowIfNull(searchFilterContext);
 
-        // TODO: add extra validation in here to ensure values sent can be parsed correctly.
+        // Ensure we only receive a single facet value in the request.
+        if (searchFilterContext.FacetedValues.Length != 1){
+            throw new ArgumentException(
+                "Less than or equal to expression expects only one value.", searchFilterContext.Facet);
+        }
 
-        return
-            _filterExpressionFormatter
-                .CreateFormattedExpression(
-                    $"le {_filterExpressionFormatter.CreateFilterCriteriaPlaceholders(searchFilterContext.FacetedValues)}",
-                    searchFilterContext.FacetedValues);
+        // Ensure the less than or equal to facet values are in the correct format.
+        if (!double.TryParse(searchFilterContext.FacetedValues.Single().ToString(), out double number) || number <= 0){
+            throw new ArgumentException(
+                "Less than or equal to expression must be assigned a positive number or zero.", searchFilterContext.Facet);
+        }
+
+        return _filterExpressionFormatter
+            .CreateFormattedExpression(
+                $"le {_filterExpressionFormatter.CreateFilterCriteriaPlaceholders(searchFilterContext.FacetedValues)}",
+                searchFilterContext.FacetedValues);
     }
 }

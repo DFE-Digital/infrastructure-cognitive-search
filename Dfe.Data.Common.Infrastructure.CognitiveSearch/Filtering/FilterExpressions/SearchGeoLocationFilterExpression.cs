@@ -31,7 +31,19 @@ public sealed class SearchGeoLocationFilterExpression : ISearchFilterExpression
     {
         ArgumentNullException.ThrowIfNull(searchFilterContext);
 
-        // TODO: add extra validation in here to ensure values sent can be parsed correctly, i.e. geo-points are withing the real number range!
+        // We expect only two parameters here, representing Latitude and longitude.
+        if (searchFilterContext.FacetedValues.Length != 2){
+            throw new ArgumentException(
+                "The geo-location filter expression expects two values representing latitude and longitude.", searchFilterContext.Facet);
+        }
+
+        // Ensure the geo-location points are in the correct format.
+        searchFilterContext.FacetedValues.ToList()
+            .ForEach(facetValue => {
+                if (!float.TryParse(facetValue.ToString(), out _)){
+                    throw new ArgumentException("Invalid geo-location point defined in arguments.", searchFilterContext.Facet);
+                }
+            });
 
         _filterExpressionFormatter.SetExpressionParamsSeparator(" ");
 
