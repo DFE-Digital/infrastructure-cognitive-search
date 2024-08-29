@@ -8,13 +8,13 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.FilterE
 public sealed class SearchInFilterExpressionTests
 {
     [Fact]
-    public void GetFilterExpression_MultipleFacetValues_ReturnsFormattedInExpression()
+    public void GetFilterExpression_MultipleFilterValues_ReturnsFormattedInExpression()
     {
         // arrange
         SearchInFilterExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterRequest context = new("facet", ["value1", "value2", "value3"]);
+        SearchFilterRequest context = new("filter", ["value1", "value2", "value3"]);
 
-        const string expected = "search.in(facet, 'value1,value2,value3')";
+        const string expected = "search.in(filter, 'value1,value2,value3')";
 
         // act
         var result = filterExpression.GetFilterExpression(context);
@@ -24,13 +24,13 @@ public sealed class SearchInFilterExpressionTests
     }
 
     [Fact]
-    public void GetFilterExpression_BoolFacetValues_ThrowsArgumentException()
+    public void GetFilterExpression_BoolFilterValues_ThrowsArgumentException()
     {
         // arrange
         var filterExpression = new SearchInFilterExpression(
             new DefaultFilterExpressionFormatter());
 
-        var context = new SearchFilterRequest("facet", [true]);
+        var context = new SearchFilterRequest("filter", [true]);
 
         // act, assert
         Assert.Throws<ArgumentException>(() => filterExpression.GetFilterExpression(context));

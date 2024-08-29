@@ -32,10 +32,10 @@ public sealed class SearchInFilterExpression : ISearchFilterExpression
         ArgumentNullException.ThrowIfNull(searchFilterContext);
 
         // search.in expressions can't be applied to booleans.
-        searchFilterContext.FacetedValues.ToList()
-            .ForEach(facetValue => {
-                if (facetValue is bool){
-                    throw new ArgumentException("Invalid boolean type argument for facet", searchFilterContext.Facet);
+        searchFilterContext.FilterValues.ToList()
+            .ForEach(filterValue => {
+                if (filterValue is bool){
+                    throw new ArgumentException("Invalid boolean type argument for filter key", searchFilterContext.FilterKey);
                 }
             });
 
@@ -43,8 +43,8 @@ public sealed class SearchInFilterExpression : ISearchFilterExpression
 
         return _filterExpressionFormatter
             .CreateFormattedExpression(
-                $"search.in({searchFilterContext.Facet}, " +
-                $"'{_filterExpressionFormatter.CreateFilterCriteriaPlaceholders(searchFilterContext.FacetedValues)}')",
-                searchFilterContext.FacetedValues);
+                $"search.in({searchFilterContext.FilterKey}, " +
+                $"'{_filterExpressionFormatter.CreateFilterCriteriaPlaceholders(searchFilterContext.FilterValues)}')",
+                searchFilterContext.FilterValues);
     }
 }

@@ -40,16 +40,16 @@ public sealed class SearchGeoLocationFilterExpression : ISearchFilterExpression
         ArgumentNullException.ThrowIfNull(searchFilterContext);
 
         // We expect only two parameters here, representing Latitude and longitude.
-        if (searchFilterContext.FacetedValues.Length != 2){
+        if (searchFilterContext.FilterValues.Length != 2){
             throw new ArgumentException(
-                "The geo-location filter expression expects two values representing latitude and longitude.", searchFilterContext.Facet);
+                "The geo-location filter expression expects two values representing latitude and longitude.", searchFilterContext.FilterKey);
         }
 
         // Ensure the geo-location points are in the correct format.
-        searchFilterContext.FacetedValues.ToList()
-            .ForEach(facetValue => {
-                if (!float.TryParse(facetValue.ToString(), out _)){
-                    throw new ArgumentException("Invalid geo-location point defined in arguments.", searchFilterContext.Facet);
+        searchFilterContext.FilterValues.ToList()
+            .ForEach(filterValue => {
+                if (!float.TryParse(filterValue.ToString(), out _)){
+                    throw new ArgumentException("Invalid geo-location point defined in arguments.", searchFilterContext.FilterKey);
                 }
             });
 
@@ -58,7 +58,7 @@ public sealed class SearchGeoLocationFilterExpression : ISearchFilterExpression
         return _filterExpressionFormatter
             .CreateFormattedExpression(
                 "geo.distance(Location,geography'POINT(" +
-                $"{_filterExpressionFormatter.CreateFilterCriteriaPlaceholders(searchFilterContext.FacetedValues)})')",
-                searchFilterContext.FacetedValues);
+                $"{_filterExpressionFormatter.CreateFilterCriteriaPlaceholders(searchFilterContext.FilterValues)})')",
+                searchFilterContext.FilterValues);
     }
 }

@@ -8,31 +8,30 @@ public sealed record SearchFilterRequest
     /// <summary>
     /// 
     /// </summary>
-    public string Facet { get; }
+    public string FilterKey { get; }
     /// <summary>
     /// 
     /// </summary>
-    public object[] FacetedValues { get; }
+    public object[] FilterValues { get; }
 
-    /// <summary>
-    /// s
-    /// </summary>
-    /// <param name="facet"></param>
-    /// <param name="facetedValues"></param>
-    /// <exception cref="ArgumentNullException"></exception>
-    /// <exception cref="ArgumentException"></exception>
-    public SearchFilterRequest(string facet, IEnumerable<object> facetedValues)
+   /// <summary>
+   /// 
+   /// </summary>
+   /// <param name="filterKey"></param>
+   /// <param name="filterValues"></param>
+   /// <exception cref="ArgumentException"></exception>
+    public SearchFilterRequest(string filterKey, IEnumerable<object> filterValues)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(facet);
-        ArgumentNullException.ThrowIfNull(facetedValues);
+        ArgumentException.ThrowIfNullOrWhiteSpace(filterKey);
+        ArgumentNullException.ThrowIfNull(filterValues);
 
-        if (!facetedValues.Any())
+        if (!filterValues.Any())
         {
             throw new ArgumentException(
-                "Faceted values are required to build search filter arguments", nameof(facetedValues));
+                "Filter values are required to build search filter arguments", nameof(filterValues));
         }
 
-        Facet = facet;
-        FacetedValues = facetedValues.ToArray();
+        FilterKey = filterKey;
+        FilterValues = filterValues.ToArray();
     }
 }

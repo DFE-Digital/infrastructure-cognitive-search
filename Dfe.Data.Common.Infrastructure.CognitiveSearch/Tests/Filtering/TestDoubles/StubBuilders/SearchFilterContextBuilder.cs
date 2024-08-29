@@ -2,47 +2,47 @@
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.FilterExpressions.StubBuilders;
 
-public sealed class SearchFilterContextBuilder
+public sealed class SearchFilterRequestBuilder
 {
-    private string _facet = null!;
-    private readonly List<object?> _facetedValues = new();
-    private readonly List<SearchFilterRequest> _searchFilterContexts = new();
+    private string _filterKey = null!;
+    private readonly List<object?> _filterValues = new();
+    private readonly List<SearchFilterRequest> _searchFilterRequests = new();
 
-    public SearchFilterContextBuilder BuildSearchFilterContextsWith(params (string, List<object>?)[] searchFilterContextParams)
+    public SearchFilterRequestBuilder BuildSearchFilterRequestsWith(params (string, List<object>?)[] searchFilterRequestParams)
     {
-        foreach (var searchFilterContextParam in searchFilterContextParams)
+        foreach (var searchFilterRequestParam in searchFilterRequestParams)
         {
-            _searchFilterContexts.Add(
+            _searchFilterRequests.Add(
                 Create()
-                .WithFacetKey(searchFilterContextParam.Item1)
-                .WithFacetedValues(searchFilterContextParam.Item2).Build());
+                .WithFilterKey(searchFilterRequestParam.Item1)
+                .WithFilterValues(searchFilterRequestParam.Item2).Build());
         }
 
         return this;
     }
 
-    public SearchFilterContextBuilder WithFacetKey(string facetKey)
+    public SearchFilterRequestBuilder WithFilterKey(string filterKey)
     {
-        _facet = facetKey;
+        _filterKey = filterKey;
         return this;
     }
 
-    public SearchFilterContextBuilder WithFacetedValues(List<object>? facetedValues)
+    public SearchFilterRequestBuilder WithFilterValues(List<object>? filterValues)
     {
-        facetedValues?.ForEach(facetedValue =>
-            WithFacetedValue(facetedValue));
+        filterValues?.ForEach(filterValue =>
+            WithFilterValue(filterValue));
 
         return this;
     }
 
-    public SearchFilterContextBuilder WithFacetedValue(object? facetedValue)
+    public SearchFilterRequestBuilder WithFilterValue(object? filterValue)
     {
-        _facetedValues.Add(facetedValue);
+        _filterValues.Add(filterValue);
         return this;
     }
 
-    public static SearchFilterContextBuilder Create() => new();
+    public static SearchFilterRequestBuilder Create() => new();
 
-    public SearchFilterRequest Build() => new(_facet, _facetedValues!);
-    public List<SearchFilterRequest> BuildSearchFilterContexts() => _searchFilterContexts;
+    public SearchFilterRequest Build() => new(_filterKey, _filterValues!);
+    public List<SearchFilterRequest> BuildSearchFilterRequests() => _searchFilterRequests;
 }

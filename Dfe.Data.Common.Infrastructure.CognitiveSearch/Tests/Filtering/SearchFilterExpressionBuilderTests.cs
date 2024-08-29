@@ -42,11 +42,11 @@ public class SearchFilterExpressionBuilderTests
         SearchFilterExpressionsBuilder searchFilterExpressionBuilder = new(searchFilterExpressionFactory, logicalOperatorFactory, options);
 
         List<SearchFilterRequest> searchFilterContexts =
-            SearchFilterContextBuilder.Create().BuildSearchFilterContextsWith(
+            SearchFilterRequestBuilder.Create().BuildSearchFilterRequestsWith(
                ("OFSTEDRATINGCODE", new List<object> { "2", "5", "9", "12" }),
                ("RELIGIOUSCHARACTERCODE", new List<object> { "00", "02" })
             )
-            .BuildSearchFilterContexts();
+            .BuildSearchFilterRequests();
 
         // act.
         string searchFilterResult =
@@ -85,11 +85,11 @@ public class SearchFilterExpressionBuilderTests
         SearchFilterExpressionsBuilder searchFilterExpressionBuilder = new(searchFilterExpressionFactory, logicalOperatorFactory, options);
 
         List<SearchFilterRequest> searchFilterContexts =
-            SearchFilterContextBuilder.Create().BuildSearchFilterContextsWith(
+            SearchFilterRequestBuilder.Create().BuildSearchFilterRequestsWith(
                ("GEOLOCATION", new List<object> { "-1.69469", "54.87835" }),
                ("GEODISTANCE", new List<object> { "4.8" })
             )
-            .BuildSearchFilterContexts();
+            .BuildSearchFilterRequests();
 
         // act.
         string searchFilterResult =

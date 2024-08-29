@@ -8,11 +8,11 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.FilterE
 public sealed class LessThanOrEqualToExpressionTests
 {
     [Fact]
-    public void GetFilterExpression_SingleFacetValue_ReturnsFormattedLessThanOrEqualToExpression()
+    public void GetFilterExpression_SingleFilterValue_ReturnsFormattedLessThanOrEqualToExpression()
     {
         // arrange
         LessThanOrEqualToExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterRequest context = new("facet", ["2.8"]);
+        SearchFilterRequest context = new("filter", ["2.8"]);
 
         const string expected = "le 2.8";
 
@@ -24,11 +24,11 @@ public sealed class LessThanOrEqualToExpressionTests
     }
 
     [Fact]
-    public void GetFilterExpression_MultipleFacetValues_ThrowsArgumentException()
+    public void GetFilterExpression_MultipleFilterValues_ThrowsArgumentException()
     {
         // arrange
         LessThanOrEqualToExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterRequest context = new("facet", ["2.8", "3.4", "5.8"]);
+        SearchFilterRequest context = new("filter", ["2.8", "3.4", "5.8"]);
 
         // act.
         Action failedGetFilterExpressionAction = () =>
@@ -37,15 +37,15 @@ public sealed class LessThanOrEqualToExpressionTests
         //assert
         ArgumentException exception =
             Assert.Throws<ArgumentException>(failedGetFilterExpressionAction);
-        Assert.Equal("Less than or equal to expression expects only one value. (Parameter 'facet')", exception.Message);
+        Assert.Equal("Less than or equal to expression expects only one value. (Parameter 'filter')", exception.Message);
     }
 
     [Fact]
-    public void GetFilterExpression_NonNumericFacetValue_ThrowsArgumentException()
+    public void GetFilterExpression_NonNumericFilterValue_ThrowsArgumentException()
     {
         // arrange
         LessThanOrEqualToExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterRequest context = new("facet", ["HelloWorld"]);
+        SearchFilterRequest context = new("filter", ["HelloWorld"]);
 
         // act.
         Action failedGetFilterExpressionAction = () =>
@@ -54,15 +54,15 @@ public sealed class LessThanOrEqualToExpressionTests
         //assert
         ArgumentException exception =
             Assert.Throws<ArgumentException>(failedGetFilterExpressionAction);
-        Assert.Equal("Less than or equal to expression must be assigned a positive number or zero. (Parameter 'facet')", exception.Message);
+        Assert.Equal("Less than or equal to expression must be assigned a positive number or zero. (Parameter 'filter')", exception.Message);
     }
 
     [Fact]
-    public void GetFilterExpression_NonNegativeFacetValue_ThrowsArgumentException()
+    public void GetFilterExpression_NonNegativeFilterValue_ThrowsArgumentException()
     {
         // arrange
         LessThanOrEqualToExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterRequest context = new("facet", ["-1.2"]);
+        SearchFilterRequest context = new("filter", ["-1.2"]);
 
         // act.
         Action failedGetFilterExpressionAction = () =>
@@ -71,7 +71,7 @@ public sealed class LessThanOrEqualToExpressionTests
         //assert
         ArgumentException exception =
             Assert.Throws<ArgumentException>(failedGetFilterExpressionAction);
-        Assert.Equal("Less than or equal to expression must be assigned a positive number or zero. (Parameter 'facet')", exception.Message);
+        Assert.Equal("Less than or equal to expression must be assigned a positive number or zero. (Parameter 'filter')", exception.Message);
     }
 
     [Fact]

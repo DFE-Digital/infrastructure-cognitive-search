@@ -61,16 +61,16 @@ public sealed class SearchFilterExpressionsBuilder : ISearchFilterExpressionsBui
         List<string> searchFilters = [];
 
         // Only derive search expressions that are recognised through the filter key to expression map.
-        foreach (SearchFilterRequest searchFilterContext in searchFilterContexts
+        foreach (SearchFilterRequest searchFilterRequest in searchFilterContexts
             .Where(searchFilterContext =>
                 _filterKeyToFilterExpressionMapOptions
-                    .SearchFilterToExpressionMap.ContainsKey(searchFilterContext.Facet)))
+                    .SearchFilterToExpressionMap.ContainsKey(searchFilterContext.FilterKey)))
         {
             ISearchFilterExpression searchFilterExpression =
                 _searchFilterExpressionFactory.CreateFilter(
-                    _filterKeyToFilterExpressionMapOptions.SearchFilterToExpressionMap[searchFilterContext.Facet]);
+                    _filterKeyToFilterExpressionMapOptions.SearchFilterToExpressionMap[searchFilterRequest.FilterKey]);
 
-            searchFilters.Add(searchFilterExpression.GetFilterExpression(searchFilterContext));
+            searchFilters.Add(searchFilterExpression.GetFilterExpression(searchFilterRequest));
         }
 
         return searchFilters.AsReadOnly();

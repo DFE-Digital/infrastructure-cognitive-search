@@ -8,11 +8,11 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.FilterE
 public sealed class SearchGeoLocationFilterExpressionTests
 {
     [Fact]
-    public void GetFilterExpression_TwoFacetValues_ReturnsFormattedExpression()
+    public void GetFilterExpression_TwoFilterValues_ReturnsFormattedExpression()
     {
         // arrange
         SearchGeoLocationFilterExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterRequest context = new("facet", ["2.23", "-1.34"]);
+        SearchFilterRequest context = new("filter", ["2.23", "-1.34"]);
 
         const string expected = "geo.distance(Location,geography'POINT(2.23 -1.34)')";
 
@@ -37,11 +37,11 @@ public sealed class SearchGeoLocationFilterExpressionTests
     }
 
     [Fact]
-    public void GetFilterExpression_MoreThanTwoFacetValues_ThrowsArgumentException()
+    public void GetFilterExpression_MoreThanTwoFilterValues_ThrowsArgumentException()
     {
         // arrange
         SearchGeoLocationFilterExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterRequest context = new("facet", ["2.23", "-1.34", "9.34"]);
+        SearchFilterRequest context = new("filter", ["2.23", "-1.34", "9.34"]);
 
         // act.
         Action failedGetFilterExpressionAction = () =>
@@ -50,15 +50,15 @@ public sealed class SearchGeoLocationFilterExpressionTests
         //assert
         ArgumentException exception =
             Assert.Throws<ArgumentException>(failedGetFilterExpressionAction);
-        Assert.Equal("The geo-location filter expression expects two values representing latitude and longitude. (Parameter 'facet')", exception.Message);
+        Assert.Equal("The geo-location filter expression expects two values representing latitude and longitude. (Parameter 'filter')", exception.Message);
     }
 
     [Fact]
-    public void GetFilterExpression_NonNumericFacetValues_ThrowsArgumentException()
+    public void GetFilterExpression_NonNumericFilterValues_ThrowsArgumentException()
     {
         // arrange
         SearchGeoLocationFilterExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterRequest context = new("facet", ["Hello", "World"]);
+        SearchFilterRequest context = new("filter", ["Hello", "World"]);
 
         // act.
         Action failedGetFilterExpressionAction = () =>
@@ -67,6 +67,6 @@ public sealed class SearchGeoLocationFilterExpressionTests
         //assert
         ArgumentException exception =
             Assert.Throws<ArgumentException>(failedGetFilterExpressionAction);
-        Assert.Equal("Invalid geo-location point defined in arguments. (Parameter 'facet')", exception.Message);
+        Assert.Equal("Invalid geo-location point defined in arguments. (Parameter 'filter')", exception.Message);
     }
 }
