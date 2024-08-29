@@ -12,7 +12,7 @@ public sealed class SearchGeoLocationFilterExpressionTests
     {
         // arrange
         SearchGeoLocationFilterExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterContext context = new("facet", ["2.23", "-1.34"]);
+        SearchFilterRequest context = new("facet", ["2.23", "-1.34"]);
 
         const string expected = "geo.distance(Location,geography'POINT(2.23 -1.34)')";
 
@@ -41,7 +41,7 @@ public sealed class SearchGeoLocationFilterExpressionTests
     {
         // arrange
         SearchGeoLocationFilterExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterContext context = new("facet", ["2.23", "-1.34", "9.34"]);
+        SearchFilterRequest context = new("facet", ["2.23", "-1.34", "9.34"]);
 
         // act.
         Action failedGetFilterExpressionAction = () =>
@@ -58,7 +58,7 @@ public sealed class SearchGeoLocationFilterExpressionTests
     {
         // arrange
         SearchGeoLocationFilterExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterContext context = new("facet", ["Hello", "World"]);
+        SearchFilterRequest context = new("facet", ["Hello", "World"]);
 
         // act.
         Action failedGetFilterExpressionAction = () =>

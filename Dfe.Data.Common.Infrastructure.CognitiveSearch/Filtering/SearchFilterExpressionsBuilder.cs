@@ -42,7 +42,7 @@ public sealed class SearchFilterExpressionsBuilder : ISearchFilterExpressionsBui
     /// </summary>
     /// <param name="searchFilterContexts"></param>
     /// <returns></returns>
-    public string BuildSearchFilterExpressions(IEnumerable<SearchFilterContext> searchFilterContexts)
+    public string BuildSearchFilterExpressions(IEnumerable<SearchFilterRequest> searchFilterContexts)
     {
         IEnumerable<string> searchFilters = GetValidSearchFilterExpression(searchFilterContexts);
         ILogicalOperator logicalOperator = GetDefaultLogicalOperator();
@@ -57,12 +57,12 @@ public sealed class SearchFilterExpressionsBuilder : ISearchFilterExpressionsBui
     /// </summary>
     /// <param name="searchFilterContexts"></param>
     /// <returns></returns>
-    private ReadOnlyCollection<string> GetValidSearchFilterExpression(IEnumerable<SearchFilterContext> searchFilterContexts)
+    private ReadOnlyCollection<string> GetValidSearchFilterExpression(IEnumerable<SearchFilterRequest> searchFilterContexts)
     {
         List<string> searchFilters = [];
 
         // Only derive search expressions that are recognised through the filter key to expression map.
-        foreach (SearchFilterContext searchFilterContext in searchFilterContexts
+        foreach (SearchFilterRequest searchFilterContext in searchFilterContexts
             .Where(searchFilterContext =>
                 _filterKeyToFilterExpressionMapOptions
                     .SearchFilterToExpressionMap.ContainsKey(searchFilterContext.Facet)))

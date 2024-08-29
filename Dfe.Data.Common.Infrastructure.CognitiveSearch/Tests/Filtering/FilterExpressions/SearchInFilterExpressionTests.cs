@@ -12,7 +12,7 @@ public sealed class SearchInFilterExpressionTests
     {
         // arrange
         SearchInFilterExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterContext context = new("facet", ["value1", "value2", "value3"]);
+        SearchFilterRequest context = new("facet", ["value1", "value2", "value3"]);
 
         const string expected = "search.in(facet, 'value1,value2,value3')";
 
@@ -30,7 +30,7 @@ public sealed class SearchInFilterExpressionTests
         var filterExpression = new SearchInFilterExpression(
             new DefaultFilterExpressionFormatter());
 
-        var context = new SearchFilterContext("facet", [true]);
+        var context = new SearchFilterRequest("facet", [true]);
 
         // act, assert
         Assert.Throws<ArgumentException>(() => filterExpression.GetFilterExpression(context));

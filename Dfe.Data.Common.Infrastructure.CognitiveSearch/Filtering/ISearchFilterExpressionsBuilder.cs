@@ -12,5 +12,5 @@ public interface ISearchFilterExpressionsBuilder
     /// </summary>
     /// <param name="searchFilterContexts"></param>
     /// <returns></returns>
-    string BuildSearchFilterExpressions(IEnumerable<SearchFilterContext> searchFilterContexts);
+    string BuildSearchFilterExpressions(IEnumerable<SearchFilterRequest> searchFilterContexts);
 }

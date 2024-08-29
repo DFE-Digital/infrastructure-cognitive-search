@@ -6,7 +6,7 @@ public sealed class SearchFilterContextBuilder
 {
     private string _facet = null!;
     private readonly List<object?> _facetedValues = new();
-    private readonly List<SearchFilterContext> _searchFilterContexts = new();
+    private readonly List<SearchFilterRequest> _searchFilterContexts = new();
 
     public SearchFilterContextBuilder BuildSearchFilterContextsWith(params (string, List<object>?)[] searchFilterContextParams)
     {
@@ -43,6 +43,6 @@ public sealed class SearchFilterContextBuilder
 
     public static SearchFilterContextBuilder Create() => new();
 
-    public SearchFilterContext Build() => new(_facet, _facetedValues!);
-    public List<SearchFilterContext> BuildSearchFilterContexts() => _searchFilterContexts;
+    public SearchFilterRequest Build() => new(_facet, _facetedValues!);
+    public List<SearchFilterRequest> BuildSearchFilterContexts() => _searchFilterContexts;
 }

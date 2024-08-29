@@ -27,7 +27,7 @@ public sealed class SearchGeoLocationFilterExpression : ISearchFilterExpression
     /// </summary>
     /// <param name="searchFilterContext"></param>
     /// <returns></returns>
-    public string GetFilterExpression(SearchFilterContext searchFilterContext)
+    public string GetFilterExpression(SearchFilterRequest searchFilterContext)
     {
         ArgumentNullException.ThrowIfNull(searchFilterContext);
 

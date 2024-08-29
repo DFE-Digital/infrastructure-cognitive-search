@@ -12,7 +12,7 @@ public sealed class LessThanOrEqualToExpressionTests
     {
         // arrange
         LessThanOrEqualToExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterContext context = new("facet", ["2.8"]);
+        SearchFilterRequest context = new("facet", ["2.8"]);
 
         const string expected = "le 2.8";
 
@@ -28,7 +28,7 @@ public sealed class LessThanOrEqualToExpressionTests
     {
         // arrange
         LessThanOrEqualToExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterContext context = new("facet", ["2.8", "3.4", "5.8"]);
+        SearchFilterRequest context = new("facet", ["2.8", "3.4", "5.8"]);
 
         // act.
         Action failedGetFilterExpressionAction = () =>
@@ -45,7 +45,7 @@ public sealed class LessThanOrEqualToExpressionTests
     {
         // arrange
         LessThanOrEqualToExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterContext context = new("facet", ["HelloWorld"]);
+        SearchFilterRequest context = new("facet", ["HelloWorld"]);
 
         // act.
         Action failedGetFilterExpressionAction = () =>
@@ -62,7 +62,7 @@ public sealed class LessThanOrEqualToExpressionTests
     {
         // arrange
         LessThanOrEqualToExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterContext context = new("facet", ["-1.2"]);
+        SearchFilterRequest context = new("facet", ["-1.2"]);
 
         // act.
         Action failedGetFilterExpressionAction = () =>

@@ -3,7 +3,7 @@
 /// <summary>
 /// 
 /// </summary>
-public sealed class SearchFilterContext
+public sealed class SearchFilterRequest
 {
     /// <summary>
     /// 
@@ -21,7 +21,7 @@ public sealed class SearchFilterContext
     /// <param name="facetedValues"></param>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="ArgumentException"></exception>
-    public SearchFilterContext(string facet, IEnumerable<object> facetedValues)
+    public SearchFilterRequest(string facet, IEnumerable<object> facetedValues)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(facet);
         ArgumentNullException.ThrowIfNull(facetedValues);
