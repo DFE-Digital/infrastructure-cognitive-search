@@ -8,7 +8,7 @@ public interface ISearchFilterExpressionsBuilder
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="searchFilterContexts"></param>
+    /// <param name="searchFilterRequests"></param>
     /// <returns></returns>
-    string BuildSearchFilterExpressions(IEnumerable<SearchFilterRequest> searchFilterContexts);
+    string BuildSearchFilterExpressions(IEnumerable<SearchFilterRequest> searchFilterRequests);
 }

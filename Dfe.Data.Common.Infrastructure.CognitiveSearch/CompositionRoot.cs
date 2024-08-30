@@ -156,7 +156,6 @@ public static class CompositionRoot
             .Configure<IConfiguration>(
                 (settings, configuration) =>
                     configuration
-                        .GetSection("AzureCognitiveSearchOptions:SearchEstablishment:FilterKeyToFilterExpressionMapOptions")
-                        .Bind(settings));
+                        .GetSection("FilterKeyToFilterExpressionMapOptions").Bind(settings));
     }
 }

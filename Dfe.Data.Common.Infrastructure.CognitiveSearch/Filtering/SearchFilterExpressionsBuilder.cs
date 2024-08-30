@@ -39,11 +39,11 @@ public sealed class SearchFilterExpressionsBuilder : ISearchFilterExpressionsBui
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="searchFilterContexts"></param>
+    /// <param name="searchFilterRequests"></param>
     /// <returns></returns>
-    public string BuildSearchFilterExpressions(IEnumerable<SearchFilterRequest> searchFilterContexts)
+    public string BuildSearchFilterExpressions(IEnumerable<SearchFilterRequest> searchFilterRequests)
     {
-        IEnumerable<string> searchFilters = GetValidSearchFilterExpression(searchFilterContexts);
+        IEnumerable<string> searchFilters = GetValidSearchFilterExpression(searchFilterRequests);
         ILogicalOperator logicalOperator = GetDefaultLogicalOperator();
 
         _aggregatedSearchFilterExpression.AppendJoin(logicalOperator.GetOperatorExpression(), searchFilters);
@@ -54,17 +54,17 @@ public sealed class SearchFilterExpressionsBuilder : ISearchFilterExpressionsBui
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="searchFilterContexts"></param>
+    /// <param name="searchFilterRequests"></param>
     /// <returns></returns>
-    private ReadOnlyCollection<string> GetValidSearchFilterExpression(IEnumerable<SearchFilterRequest> searchFilterContexts)
+    private ReadOnlyCollection<string> GetValidSearchFilterExpression(IEnumerable<SearchFilterRequest> searchFilterRequests)
     {
         List<string> searchFilters = [];
 
         // Only derive search expressions that are recognised through the filter key to expression map.
-        foreach (SearchFilterRequest searchFilterRequest in searchFilterContexts
-            .Where(searchFilterContext =>
+        foreach (SearchFilterRequest searchFilterRequest in searchFilterRequests
+            .Where(searchFilterRequest =>
                 _filterKeyToFilterExpressionMapOptions
-                    .SearchFilterToExpressionMap.ContainsKey(searchFilterContext.FilterKey)))
+                    .SearchFilterToExpressionMap.ContainsKey(searchFilterRequest.FilterKey)))
         {
             ISearchFilterExpression searchFilterExpression =
                 _searchFilterExpressionFactory.CreateFilter(

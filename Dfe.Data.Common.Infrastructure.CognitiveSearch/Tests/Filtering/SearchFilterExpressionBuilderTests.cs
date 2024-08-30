@@ -15,7 +15,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering;
 public class SearchFilterExpressionBuilderTests
 {
     [Fact]
-    public void BuildSearchFilterExpressions_WithValidSingleSearchFilterContextWithMultipleParams_ReturnsExpectedAggregatedSearchFilter()
+    public void BuildSearchFilterExpressions_WithValidSingleSearchFilterRequestWithMultipleParams_ReturnsExpectedAggregatedSearchFilter()
     {
         // arrange.
         ISearchFilterExpressionFactory searchFilterExpressionFactory =
@@ -41,7 +41,7 @@ public class SearchFilterExpressionBuilderTests
 
         SearchFilterExpressionsBuilder searchFilterExpressionBuilder = new(searchFilterExpressionFactory, logicalOperatorFactory, options);
 
-        List<SearchFilterRequest> searchFilterContexts =
+        List<SearchFilterRequest> searchFilterRequests =
             SearchFilterRequestBuilder.Create().BuildSearchFilterRequestsWith(
                ("OFSTEDRATINGCODE", new List<object> { "2", "5", "9", "12" }),
                ("RELIGIOUSCHARACTERCODE", new List<object> { "00", "02" })
@@ -50,7 +50,7 @@ public class SearchFilterExpressionBuilderTests
 
         // act.
         string searchFilterResult =
-            searchFilterExpressionBuilder.BuildSearchFilterExpressions(searchFilterContexts);
+            searchFilterExpressionBuilder.BuildSearchFilterExpressions(searchFilterRequests);
 
         // assert.
         searchFilterResult.Should().NotBeNullOrWhiteSpace(searchFilterResult);
@@ -58,7 +58,7 @@ public class SearchFilterExpressionBuilderTests
     }
 
     [Fact]
-    public void BuildSearchFilterExpressions_WithValidGeoLocationSearchFilterContextWithMultipleParams_ReturnsExpectedAggregatedGeoLocationFilter()
+    public void BuildSearchFilterExpressions_WithValidGeoLocationSearchFilterRequestWithMultipleParams_ReturnsExpectedAggregatedGeoLocationFilter()
     {
         // arrange.
         ISearchFilterExpressionFactory searchFilterExpressionFactory =
@@ -84,7 +84,7 @@ public class SearchFilterExpressionBuilderTests
 
         SearchFilterExpressionsBuilder searchFilterExpressionBuilder = new(searchFilterExpressionFactory, logicalOperatorFactory, options);
 
-        List<SearchFilterRequest> searchFilterContexts =
+        List<SearchFilterRequest> searchFilterRequests =
             SearchFilterRequestBuilder.Create().BuildSearchFilterRequestsWith(
                ("GEOLOCATION", new List<object> { "-1.69469", "54.87835" }),
                ("GEODISTANCE", new List<object> { "4.8" })
@@ -93,7 +93,7 @@ public class SearchFilterExpressionBuilderTests
 
         // act.
         string searchFilterResult =
-            searchFilterExpressionBuilder.BuildSearchFilterExpressions(searchFilterContexts);
+            searchFilterExpressionBuilder.BuildSearchFilterExpressions(searchFilterRequests);
 
         // assert.
         searchFilterResult.Should().NotBeNullOrWhiteSpace(searchFilterResult);

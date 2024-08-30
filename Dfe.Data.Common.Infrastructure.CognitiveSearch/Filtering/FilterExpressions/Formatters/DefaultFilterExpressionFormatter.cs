@@ -10,7 +10,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.FilterExpress
 /// a result string that consists of the original fixed text intermixed with the string representation of the objects
 /// in the list. Composite formatting is supported by methods such as String.Format, Console.WriteLine, and StringBuilder.AppendFormat.
 /// The expression formatter leverages the <see cref="FormattableStringFactory"/>, please refer to this link for further information,
-/// <see href="https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.formattablestringfactory?view=net-8.0"/>.
+/// <a href="https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.formattablestringfactory?view=net-8.0">Fomattable string factory details</a>.
 /// </summary>
 public sealed class DefaultFilterExpressionFormatter : IFilterExpressionFormatter
 {
