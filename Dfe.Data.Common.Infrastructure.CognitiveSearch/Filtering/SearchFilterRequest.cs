@@ -3,7 +3,7 @@
 /// <summary>
 /// 
 /// </summary>
-public sealed record SearchFilterRequest
+public sealed class SearchFilterRequest
 {
     /// <summary>
     /// 

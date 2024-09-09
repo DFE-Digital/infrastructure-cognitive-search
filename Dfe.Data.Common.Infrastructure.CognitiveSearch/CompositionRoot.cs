@@ -137,15 +137,15 @@ public static class CompositionRoot
 
         services.TryAddSingleton<ILogicalOperatorFactory>(provider =>
         {
-            var scopedSearchFilterExpressionProvider = provider.CreateScope();
+            var scopedLogicalOperatorExpressionProvider = provider.CreateScope();
             var logicalOperators =
                 new Dictionary<string, Func<ILogicalOperator>>()
                 {
                     ["AndLogicalOperator"] = () =>
-                           scopedSearchFilterExpressionProvider
+                           scopedLogicalOperatorExpressionProvider
                                .ServiceProvider.GetRequiredService<AndLogicalOperator>(),
                     ["OrLogicalOperator"] = () =>
-                        scopedSearchFilterExpressionProvider
+                        scopedLogicalOperatorExpressionProvider
                             .ServiceProvider.GetRequiredService<OrLogicalOperator>()
                 };
 

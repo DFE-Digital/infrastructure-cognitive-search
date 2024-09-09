@@ -7,7 +7,7 @@
 /// responsible for handling the creation of concrete <see cref="ISearchFilterExpression"/>
 /// instances. Typical container setup/registrations are as follows,
 /// <code>
-/// services.TryAddSingleton{ISearchFilterExpressionFactory>(provider =>
+/// services.TryAddSingleton&lt;ISearchFilterExpressionFactory&gt;(provider =>
 /// {
 ///    var scopedSearchFilterExpressionProvider = provider.CreateScope();
 ///    var searchFilterExpressions =

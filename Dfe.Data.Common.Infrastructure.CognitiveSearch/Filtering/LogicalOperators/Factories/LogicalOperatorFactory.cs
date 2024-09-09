@@ -1,43 +1,86 @@
 ﻿namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.LogicalOperators.Factories;
 
 /// <summary>
-/// 
+/// Provides a factory implementation over which to derive Azure AI OData logical
+/// operator expressions. This factory leverages dependency injection which necessitates
+/// setup of a dictionary of <see cref="ILogicalOperator"/> delegates
+/// responsible for handling the creation of concrete <see cref="ILogicalOperator"/>
+/// instances. Typical container setup/registrations are as follows,
+/// <code>
+/// services.TryAddSingleton&lt;ILogicalOperatorFactory&gt;(provider =>
+/// {
+///    var scopedLogicalOperatorExpressionProvider = provider.CreateScope();
+///    var logicalOperators =
+///      new Dictionary&lt;string, Func&lt;ILogicalOperator&gt;&gt;()
+///      {
+///          ["AndLogicalOperator"] = () =>
+///              scopedLogicalOperatorExpressionProvider
+///                .ServiceProvider.GetRequiredService&lt;AndLogicalOperator&gt;(),
+///          ["OrLogicalOperator"] = () =>
+///              scopedLogicalOperatorExpressionProvider
+///                .ServiceProvider.GetRequiredService&lt;OrLogicalOperator&gt;()
+///      };
+///
+///    return new LogicalOperatorFactory(logicalOperators);
+///});
+/// </code>
 /// </summary>
 public sealed class LogicalOperatorFactory : ILogicalOperatorFactory
 {
     private readonly Dictionary<string, Func<ILogicalOperator>> _logicalOperatorFactory;
 
     /// <summary>
-    /// 
+    /// The <see cref="LogicalOperatorFactory"/> uses a dictionary of delegates injected via the IOC
+    /// container which allows management of object lifetime and scope to be managed via this composition root.
     /// </summary>
-    /// <param name="logicalOperatorFactory"></param>
+    /// <param name="logicalOperatorFactory">
+    /// Provides a dictionary of delegates used to derive the requested type.
+    /// </param>
     public LogicalOperatorFactory(Dictionary<string, Func<ILogicalOperator>> logicalOperatorFactory)
     {
         _logicalOperatorFactory = logicalOperatorFactory;
     }
 
     /// <summary>
-    /// 
+    /// Allows creation of an <see cref="ILogicalOperator"/> instance based on the generic type specified.
     /// </summary>
-    /// <typeparam name="TLogicalOperator"></typeparam>
-    /// <returns></returns>
+    /// <typeparam name="TLogicalOperator">
+    /// The concrete type of <see cref="ILogicalOperator"/> requested.
+    /// </typeparam>
+    /// <returns>
+    /// The configured instance of the <see cref="ILogicalOperator"/> type.
+    /// </returns>
     public ILogicalOperator CreateLogicalOperator<TLogicalOperator>()
         where TLogicalOperator : ILogicalOperator => CreateLogicalOperator(typeof(TLogicalOperator));
 
     /// <summary>
-    /// 
+    /// Allows creation of an <see cref="ILogicalOperator"/> instance based on the type requested.
     /// </summary>
-    /// <param name="logicalOperatorType"></param>
-    /// <returns></returns>
+    /// <param name="logicalOperatorType">
+    /// The concrete implementation type of <see cref="ILogicalOperator"/> requested.
+    /// </param>
+    /// <returns>
+    /// The configured instance of the <see cref="ILogicalOperator"/> type.
+    /// </returns>
     public ILogicalOperator CreateLogicalOperator(Type logicalOperatorType) => CreateLogicalOperator(logicalOperatorName: logicalOperatorType.Name);
 
+
     /// <summary>
-    /// 
+    /// Allows creation of an <see cref="ILogicalOperator"/> instance based on the type name requested.
     /// </summary>
-    /// <param name="logicalOperatorName"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    /// <param name="logicalOperatorName">
+    /// The name of the concrete implementation type <see cref="ILogicalOperator"/> requested.
+    /// </param>
+    /// <returns>
+    /// The configured instance of the <see cref="ILogicalOperator"/> type.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Exception thrown if an invalid filter name string is provisioned.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Exception thrown if a request is made to derive an unknown
+    /// <see cref="ILogicalOperator"/> instance from the underlying IOC managed dictionary.
+    /// </exception>
     public ILogicalOperator CreateLogicalOperator(string logicalOperatorName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(logicalOperatorName);
