@@ -8,31 +8,59 @@ internal static class LogicalOperatorFactoryTestDouble
 {
     public static Mock<ILogicalOperatorFactory> LogicalOperatorFactoryMock() => new();
 
-    public static ILogicalOperatorFactory MockLogicalOperatorFactory()
+    public static ILogicalOperatorFactory MockLogicalOperatorFactory() => MockLogicalOperatorFactoryFor();
+
+    public static ILogicalOperatorFactory MockLogicalOperatorFactoryFor()
     {
         var logicalOperatorFactoryMock = LogicalOperatorFactoryMock();
 
-        _ = logicalOperatorFactoryMock
+        logicalOperatorFactoryMock
             .Setup(logicalOperatorFactory =>
                 logicalOperatorFactory
                     .CreateLogicalOperator(It.IsAny<string>()))
                         .Returns((string type) =>
-                        {
-                            ILogicalOperator logicalOperator = null!;
+                            GetLogicalOperator(type));
 
-                            switch (type)
-                            {
-                                case "AndLogicalOperator":
-                                    logicalOperator = new AndLogicalOperator();
-                                    break;
-                                case "OrLogicalOperator":
-                                    logicalOperator = new OrLogicalOperator();
-                                    break;
-                            }
-
-                            return logicalOperator;
-                        });
+        logicalOperatorFactoryMock
+            .Setup(logicalOperatorFactory =>
+                logicalOperatorFactory
+                    .CreateLogicalOperator(It.IsAny<Type>()))
+                        .Returns((Type type) =>
+                            GetLogicalOperator(type.Name));
 
         return logicalOperatorFactoryMock.Object;
+    }
+
+    public static ILogicalOperatorFactory MockLogicalOperatorFactoryFor<TFilterType>()
+    {
+        var logicalOperatorFactoryMock = LogicalOperatorFactoryMock();
+
+        logicalOperatorFactoryMock
+            .Setup(logicalOperatorFactory =>
+                logicalOperatorFactory
+                    .CreateLogicalOperator<ILogicalOperator>())
+                        .Returns(() =>
+                            GetLogicalOperator(
+                                typeof(TFilterType).Name));
+
+        return logicalOperatorFactoryMock.Object;
+    }
+
+    public static ILogicalOperator GetLogicalOperator(string logicalOperatorName)
+    {
+        ILogicalOperator logicalOperator = null!;
+
+        switch (logicalOperatorName)
+        {
+            case "AndLogicalOperator":
+                logicalOperator = new AndLogicalOperator();
+                break;
+            case "OrLogicalOperator":
+                logicalOperator = new OrLogicalOperator();
+                break;
+        }
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(logicalOperatorName);
+
+        return logicalOperator;
     }
 }
