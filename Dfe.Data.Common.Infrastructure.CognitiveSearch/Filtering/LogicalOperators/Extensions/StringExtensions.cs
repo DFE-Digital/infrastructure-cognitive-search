@@ -21,6 +21,13 @@ public static class StringExtensions
     /// </returns>
     public static string PadSides(this string value, int paddingWidth = 1)
     {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(value);
+
+        if (paddingWidth <= 0){
+            throw new ArgumentException(
+                "Please specify a positive padding number.", nameof(paddingWidth));
+        }
+
         int leftPaddingWidth = value.Length + paddingWidth;
         int rightPaddingWidth = leftPaddingWidth + paddingWidth;
 
