@@ -44,11 +44,11 @@ public static class CompositionRoot
         services.TryAddScoped<IGeoLocationClientProvider, GeoLocationClientProvider>();
         services.TryAddScoped<IGeoLocationService, DefaultGeoLocationService>();
 
-        services.AddOptions<SearchByKeywordClientOptions>()
+        services.AddOptions<AzureSearchConnectionOptions>()
            .Configure<IConfiguration>(
                (settings, configuration) =>
                    configuration
-                       .GetSection(nameof(SearchByKeywordClientOptions))
+                       .GetSection(nameof(AzureSearchConnectionOptions))
                        .Bind(settings));
 
         services.AddOptions<GeoLocationOptions>()

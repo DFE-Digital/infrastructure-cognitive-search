@@ -7,8 +7,8 @@ internal class SearchByKeywordClientOptionsBuilder
     private string _credentials = "fhjk67=j#l";
     private string _endpointUri = Faker.Internet.SecureUrl();
 
-    public SearchByKeywordClientOptions Create() =>
-        new SearchByKeywordClientOptions()
+    public AzureSearchConnectionOptions Create() =>
+        new AzureSearchConnectionOptions()
         {
             Credentials = _credentials,
             EndpointUri = _endpointUri,
