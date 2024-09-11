@@ -4,7 +4,7 @@
 /// Configuration options used to define the internal Azure
 /// cognitive search service credentials and Uri endpoint.
 /// </summary>
-public sealed class SearchByKeywordClientOptions
+public sealed class AzureSearchConnectionOptions
 {
     /// <summary>
     /// The credentials used to access the cognitive search service.

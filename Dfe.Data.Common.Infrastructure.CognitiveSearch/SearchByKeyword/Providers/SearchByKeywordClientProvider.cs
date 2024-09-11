@@ -13,7 +13,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Provide
 /// </summary>
 public sealed class SearchByKeywordClientProvider : ISearchByKeywordClientProvider
 {
-    private readonly Options.SearchByKeywordClientOptions _azureSearchClientOptions;
+    private readonly Options.AzureSearchConnectionOptions _azureSearchClientOptions;
     private readonly Dictionary<string, Lazy<SearchClient>> _lazySearchClients;
 
     /// <summary>
@@ -28,7 +28,7 @@ public sealed class SearchByKeywordClientProvider : ISearchByKeywordClientProvid
     /// instance used to determine the index(s) to configure a search client for.
     /// </param>
     public SearchByKeywordClientProvider(
-        IOptions<Options.SearchByKeywordClientOptions> azureSearchOptions,
+        IOptions<Options.AzureSearchConnectionOptions> azureSearchOptions,
         ISearchIndexNamesProvider indexNamesProvider)
     {
         ArgumentNullException.ThrowIfNull(azureSearchOptions);
