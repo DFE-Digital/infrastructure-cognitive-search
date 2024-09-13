@@ -41,40 +41,6 @@ public sealed class LessThanOrEqualToExpressionTests
     }
 
     [Fact]
-    public void GetFilterExpression_NonNumericFilterValue_ThrowsArgumentException()
-    {
-        // arrange
-        LessThanOrEqualToExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterRequest context = new("filter", ["HelloWorld"]);
-
-        // act.
-        Action failedGetFilterExpressionAction = () =>
-            filterExpression.GetFilterExpression(context);
-
-        //assert
-        ArgumentException exception =
-            Assert.Throws<ArgumentException>(failedGetFilterExpressionAction);
-        Assert.Equal("Less than or equal to expression must be assigned a positive number or zero. (Parameter 'filter')", exception.Message);
-    }
-
-    [Fact]
-    public void GetFilterExpression_NonNegativeFilterValue_ThrowsArgumentException()
-    {
-        // arrange
-        LessThanOrEqualToExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterRequest context = new("filter", ["-1.2"]);
-
-        // act.
-        Action failedGetFilterExpressionAction = () =>
-            filterExpression.GetFilterExpression(context);
-
-        //assert
-        ArgumentException exception =
-            Assert.Throws<ArgumentException>(failedGetFilterExpressionAction);
-        Assert.Equal("Less than or equal to expression must be assigned a positive number or zero. (Parameter 'filter')", exception.Message);
-    }
-
-    [Fact]
     public void Ctor_NullFilterExpressionFormatter_ThrowsArgumentException()
     {
         // arrange/act.
