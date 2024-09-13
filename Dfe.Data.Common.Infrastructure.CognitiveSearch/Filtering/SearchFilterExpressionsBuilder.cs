@@ -23,7 +23,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering;
 /// and we have the following configuration section,
 /// <code>
 /// "FilterKeyToFilterExpressionMapOptions": {
-///     "DefaultLogicalOperator": "AndLogicalOperator",
+///     "FilterChainingLogicalOperator": "AndLogicalOperator",
 ///     "SearchFilterToExpressionMap": {
 ///         "RELIGIOUSCHARACTERCODE": "SearchInFilterExpression",
 ///         "OFSTEDRATINGCODE": "SearchInFilterExpression"
@@ -91,7 +91,7 @@ public sealed class SearchFilterExpressionsBuilder : ISearchFilterExpressionsBui
     public string BuildSearchFilterExpressions(IEnumerable<SearchFilterRequest> searchFilterRequests)
     {
         IEnumerable<string> searchFilters = GetValidSearchFilterExpression(searchFilterRequests);
-        ILogicalOperator logicalOperator = GetDefaultLogicalOperator();
+        ILogicalOperator logicalOperator = GetFilterChainingLogicalOperator();
 
         _aggregatedSearchFilterExpression.AppendJoin(logicalOperator.GetOperatorExpression(), searchFilters);
 
@@ -140,13 +140,13 @@ public sealed class SearchFilterExpressionsBuilder : ISearchFilterExpressionsBui
     /// <exception cref="ArgumentException">
     /// Exception thrown if the requested <see cref="ILogicalOperator"/> cannot be derived via the factory provisioned.
     /// </exception>
-    private ILogicalOperator GetDefaultLogicalOperator()
+    private ILogicalOperator GetFilterChainingLogicalOperator()
     {
-        string defaultLogicalOperatorKey =
+        string filterChainingLogicalOperatorKey =
             !string.IsNullOrWhiteSpace(_filterKeyToFilterExpressionMapOptions.FilterChainingLogicalOperator) ?
             _filterKeyToFilterExpressionMapOptions.FilterChainingLogicalOperator :
                 throw new ArgumentException("Unable to assign a null or empty logical operator to the search expression chain.");
 
-        return _logicalOperatorFactory.CreateLogicalOperator(defaultLogicalOperatorKey);
+        return _logicalOperatorFactory.CreateLogicalOperator(filterChainingLogicalOperatorKey);
     }
 }

@@ -6,7 +6,7 @@
     /// create a configuration section as follows,
     /// <code>
     /// "FilterKeyToFilterExpressionMapOptions": {
-    ///     "DefaultLogicalOperator": "AndLogicalOperator",
+    ///     "FilterChainingLogicalOperator": "AndLogicalOperator",
     ///     "SearchFilterToExpressionMap": {
     ///         "RELIGIOUSCHARACTERCODE": "SearchInFilterExpression",
     ///         "OFSTEDRATINGCODE": "SearchInFilterExpression"

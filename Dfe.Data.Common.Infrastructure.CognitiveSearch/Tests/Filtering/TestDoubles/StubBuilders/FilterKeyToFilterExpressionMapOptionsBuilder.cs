@@ -20,7 +20,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.TestDou
             return this;
         }
 
-        public FilterKeyToFilterExpressionMapOptionsBuilder WithDefaultLogicalOperator(string filterChainingLogicalOperatorKey)
+        public FilterKeyToFilterExpressionMapOptionsBuilder WithFilterChainingLogicalOperator(string filterChainingLogicalOperatorKey)
         {
             _filterChainingLogicalOperatorKey = filterChainingLogicalOperatorKey;
             return this;
