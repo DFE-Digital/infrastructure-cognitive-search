@@ -55,12 +55,6 @@ public sealed class LessThanOrEqualToExpression : ISearchFilterExpression
                 "Less than or equal to expression expects only one value.", searchFilterRequest.FilterKey);
         }
 
-        // Ensure the less than or equal to filter values are in the correct format.
-        if (!double.TryParse(searchFilterRequest.FilterValues.Single().ToString(), out double number) || number <= 0){
-            throw new ArgumentException(
-                "Less than or equal to expression must be assigned a positive number or zero.", searchFilterRequest.FilterKey);
-        }
-
         return _filterExpressionFormatter
             .CreateFormattedExpression(
                 $"le {_filterExpressionFormatter.CreateFilterCriteriaPlaceholders(searchFilterRequest.FilterValues)}",
