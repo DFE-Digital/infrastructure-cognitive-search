@@ -40,7 +40,7 @@ public class SearchFilterExpressionFactoryTests
     }
 
     [Fact]
-    public void CreateFilter_WithValidFilterGenricTemplateType_ReturnsExpectedConfiguredFilterFromfactory()
+    public void CreateFilter_WithValidFilterGenericTemplateType_ReturnsExpectedConfiguredFilterFromfactory()
     {
         // arrange.
         ISearchFilterExpressionFactory searchFilterExpressionFactory =
