@@ -26,7 +26,7 @@
         /// or an <b>OrLogicalOperator</b>. The logical operator is then used to chain together all
         /// search filter expressions specified.
         /// </summary>
-        public string? DefaultLogicalOperator { get; set;  }
+        public string? FilterChainingLogicalOperator { get; set;  }
 
         /// <summary>
         /// The dictionary used to reconcile the incoming request key with the actual search filter expression to apply.

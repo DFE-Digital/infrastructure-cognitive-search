@@ -143,8 +143,8 @@ public sealed class SearchFilterExpressionsBuilder : ISearchFilterExpressionsBui
     private ILogicalOperator GetDefaultLogicalOperator()
     {
         string defaultLogicalOperatorKey =
-            !string.IsNullOrWhiteSpace(_filterKeyToFilterExpressionMapOptions.DefaultLogicalOperator) ?
-            _filterKeyToFilterExpressionMapOptions.DefaultLogicalOperator :
+            !string.IsNullOrWhiteSpace(_filterKeyToFilterExpressionMapOptions.FilterChainingLogicalOperator) ?
+            _filterKeyToFilterExpressionMapOptions.FilterChainingLogicalOperator :
                 throw new ArgumentException("Unable to assign a null or empty logical operator to the search expression chain.");
 
         return _logicalOperatorFactory.CreateLogicalOperator(defaultLogicalOperatorKey);

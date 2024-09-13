@@ -4,14 +4,14 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.TestDou
 {
     internal class FilterKeyToFilterExpressionMapOptionsBuilder
     {
-        private string _defaultLogicalOperatorKey = "AndLogicalOperator";
+        private string _filterChainingLogicalOperatorKey = "AndLogicalOperator";
         private IDictionary<string, string> _searchFilterToExpressionMap = new Dictionary<string, string>();
 
         public FilterKeyToFilterExpressionMapOptions Create() =>
             new()
             {
                 SearchFilterToExpressionMap = _searchFilterToExpressionMap,
-                DefaultLogicalOperator = _defaultLogicalOperatorKey,
+                FilterChainingLogicalOperator = _filterChainingLogicalOperatorKey,
             };
 
         public FilterKeyToFilterExpressionMapOptionsBuilder WithSearchFilterToExpressionMap(IDictionary<string, string> searchFilterToExpressionMap)
@@ -20,9 +20,9 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.TestDou
             return this;
         }
 
-        public FilterKeyToFilterExpressionMapOptionsBuilder WithDefaultLogicalOperator(string defaultLogicalOperatorKey)
+        public FilterKeyToFilterExpressionMapOptionsBuilder WithDefaultLogicalOperator(string filterChainingLogicalOperatorKey)
         {
-            _defaultLogicalOperatorKey = defaultLogicalOperatorKey;
+            _filterChainingLogicalOperatorKey = filterChainingLogicalOperatorKey;
             return this;
         }
     }

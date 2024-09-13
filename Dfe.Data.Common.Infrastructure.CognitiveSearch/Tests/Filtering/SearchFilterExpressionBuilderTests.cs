@@ -26,7 +26,7 @@ public class SearchFilterExpressionBuilderTests
 
         FilterKeyToFilterExpressionMapOptions filterKeyToFilterExpressionMapOptions =
                 new FilterKeyToFilterExpressionMapOptionsBuilder()
-                    .WithDefaultLogicalOperator(defaultLogicalOperatorKey: "AndLogicalOperator")
+                    .WithDefaultLogicalOperator(filterChainingLogicalOperatorKey: "AndLogicalOperator")
                     .WithSearchFilterToExpressionMap(searchFilterToExpressionMap: new Dictionary<string, string>()
                     {
                         { "OFSTEDRATINGCODE", "SearchInFilterExpression"},
@@ -69,7 +69,7 @@ public class SearchFilterExpressionBuilderTests
 
         FilterKeyToFilterExpressionMapOptions filterKeyToFilterExpressionMapOptions =
                 new FilterKeyToFilterExpressionMapOptionsBuilder()
-                    .WithDefaultLogicalOperator(defaultLogicalOperatorKey: "AndLogicalOperator")
+                    .WithDefaultLogicalOperator(filterChainingLogicalOperatorKey: "AndLogicalOperator")
                     .WithSearchFilterToExpressionMap(searchFilterToExpressionMap: new Dictionary<string, string>()
                     {
                         { "OFSTEDRATINGCODE", "SearchInFilterExpression"},
