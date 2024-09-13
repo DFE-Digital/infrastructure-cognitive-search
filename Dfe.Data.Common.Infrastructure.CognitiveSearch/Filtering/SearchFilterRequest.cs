@@ -21,18 +21,21 @@ public sealed class SearchFilterRequest
     /// </summary>
     public object[] FilterValues { get; }
 
-   /// <summary>
-   /// Constructor ensures immutability for filter key and filter values provisioned.
-   /// </summary>
-   /// <param name="filterKey">
-   /// The filter key string used to try and reconcile to the actual OData filter expression type.
-   /// </param>
-   /// <param name="filterValues">
-   /// The collection of values to apply to the OData filter expression type.
-   /// </param>
-   /// <exception cref="ArgumentException">
-   /// The exception thrown if no filter values are provisioned.
-   /// </exception>
+    /// <summary>
+    /// Constructor ensures immutability for filter key and filter values provisioned.
+    /// </summary>
+    /// <param name="filterKey">
+    /// The filter key string used to try and reconcile to the actual OData filter expression type.
+    /// </param>
+    /// <param name="filterValues">
+    /// The collection of values to apply to the OData filter expression type.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// The exception thrown if no filter key is provisioned.
+    /// </exception>
+    /// /// <exception cref="ArgumentNullException">
+    /// The exception thrown if no filter values are provisioned.
+    /// </exception>
     public SearchFilterRequest(string filterKey, IEnumerable<object> filterValues)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(filterKey);
