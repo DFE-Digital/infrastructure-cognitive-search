@@ -60,7 +60,7 @@ public sealed class SearchGeoLocationFilterExpression : ISearchFilterExpression
         // Ensure the geo-location points are in the correct format.
         searchFilterRequest.FilterValues.ToList()
             .ForEach(filterValue => {
-                if (!float.TryParse(filterValue.ToString(), out _)){
+                if (!double.TryParse(filterValue.ToString(), out _)){
                     throw new ArgumentException("Invalid geo-location point defined in arguments.", searchFilterRequest.FilterKey);
                 }
             });
