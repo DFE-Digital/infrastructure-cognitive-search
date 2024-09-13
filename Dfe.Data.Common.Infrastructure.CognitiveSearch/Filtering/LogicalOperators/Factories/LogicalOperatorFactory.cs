@@ -74,7 +74,7 @@ public sealed class LogicalOperatorFactory : ILogicalOperatorFactory
     /// <returns>
     /// The configured instance of the <see cref="ILogicalOperator"/> type.
     /// </returns>
-    /// <exception cref="ArgumentNullException">
+    /// <exception cref="ArgumentException ">
     /// Exception thrown if an invalid filter name string is provisioned.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
