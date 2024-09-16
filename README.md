@@ -138,9 +138,10 @@ You can use the Nuget Registry from a GitHub action pipeline without need for a 
 ```
 ## Authors
 
-* **Spencer O'Hegarty** - *Initial work*
+* **Spencer O'Hegarty**
 * **Catherine Lawlor**
 * **Asia Witek**
+* **Roger Howell**
 
 ## License
 
