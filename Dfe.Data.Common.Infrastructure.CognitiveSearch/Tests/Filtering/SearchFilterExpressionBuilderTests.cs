@@ -43,7 +43,7 @@ public class SearchFilterExpressionBuilderTests
 
         List<SearchFilterRequest> searchFilterRequests =
             SearchFilterRequestBuilder.Create().BuildSearchFilterRequestsWith(
-               ("OFSTEDRATINGCODE", new List<object> { "2", "5", "9", "12" }),
+               ("OFSTEDRATINGCODE", new List<object> { "The good", "The bad", "The ugly"}),
                ("RELIGIOUSCHARACTERCODE", new List<object> { "00", "02" })
             )
             .BuildSearchFilterRequests();
@@ -54,7 +54,7 @@ public class SearchFilterExpressionBuilderTests
 
         // assert.
         searchFilterResult.Should().NotBeNullOrWhiteSpace(searchFilterResult);
-        searchFilterResult.Should().Be("search.in(OFSTEDRATINGCODE, '2,5,9,12', ',') and search.in(RELIGIOUSCHARACTERCODE, '00,02', ',')");
+        searchFilterResult.Should().Be("search.in(OFSTEDRATINGCODE, 'The good,The bad,The ugly', ',') and search.in(RELIGIOUSCHARACTERCODE, '00,02', ',')");
     }
 
     [Fact]

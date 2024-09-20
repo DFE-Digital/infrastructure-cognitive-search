@@ -12,9 +12,9 @@ public sealed class SearchInFilterExpressionTests
     {
         // arrange
         SearchInFilterExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterRequest context = new("filter", ["value1", "value2", "value3"]);
+        SearchFilterRequest context = new("filter", ["value 1", "value    2", "value3"]);
 
-        const string expected = "search.in(filter, 'value1,value2,value3', ',')";
+        const string expected = "search.in(filter, 'value 1,value    2,value3', ',')";
 
         // act
         var result = filterExpression.GetFilterExpression(context);
