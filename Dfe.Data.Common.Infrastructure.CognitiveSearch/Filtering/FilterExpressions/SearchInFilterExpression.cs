@@ -61,7 +61,7 @@ public sealed class SearchInFilterExpression : ISearchFilterExpression
         return _filterExpressionFormatter
             .CreateFormattedExpression(
                 $"search.in({searchFilterRequest.FilterKey}, " +
-                $"'{_filterExpressionFormatter.CreateFilterCriteriaPlaceholders(searchFilterRequest.FilterValues)}')",
+                $"'{_filterExpressionFormatter.CreateFilterCriteriaPlaceholders(searchFilterRequest.FilterValues)}', ',')",
                 searchFilterRequest.FilterValues);
     }
 }

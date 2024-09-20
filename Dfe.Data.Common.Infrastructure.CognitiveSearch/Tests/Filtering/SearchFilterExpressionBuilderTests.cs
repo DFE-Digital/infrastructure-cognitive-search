@@ -54,7 +54,7 @@ public class SearchFilterExpressionBuilderTests
 
         // assert.
         searchFilterResult.Should().NotBeNullOrWhiteSpace(searchFilterResult);
-        searchFilterResult.Should().Be("search.in(OFSTEDRATINGCODE, '2,5,9,12') and search.in(RELIGIOUSCHARACTERCODE, '00,02')");
+        searchFilterResult.Should().Be("search.in(OFSTEDRATINGCODE, '2,5,9,12', ',') and search.in(RELIGIOUSCHARACTERCODE, '00,02', ',')");
     }
 
     [Fact]
