@@ -69,4 +69,20 @@ public sealed class SearchGeoLocationFilterExpressionTests
             Assert.Throws<ArgumentException>(failedGetFilterExpressionAction);
         Assert.Equal("Invalid geo-location point defined in arguments. (Parameter 'filter')", exception.Message);
     }
+
+    [Fact]
+    public void GetFilterExpression_MultipleFilterValuesAndDelimiterNotSpecifiedWhenNotRequired_ReturnsFormattedExpression()
+    {
+        // arrange
+        SearchGeoLocationFilterExpression filterExpression = new(new DefaultFilterExpressionFormatter());
+        SearchFilterRequest request = new("filter", ["1.0", "2.1"]);
+
+        const string expected = "geo.distance(Location,geography'POINT(1.0 2.1)')";
+
+        // act
+        string result = filterExpression.GetFilterExpression(request);
+
+        // assert
+        Assert.Equal(expected, result);
+    }
 }

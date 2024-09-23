@@ -27,12 +27,30 @@ public class SearchFilterExpressionBuilderTests
         FilterKeyToFilterExpressionMapOptions filterKeyToFilterExpressionMapOptions =
                 new FilterKeyToFilterExpressionMapOptionsBuilder()
                     .WithFilterChainingLogicalOperator(filterChainingLogicalOperatorKey: "AndLogicalOperator")
-                    .WithSearchFilterToExpressionMap(searchFilterToExpressionMap: new Dictionary<string, string>()
+                    .WithSearchFilterToExpressionMap(searchFilterToExpressionMap: new Dictionary<string, FilterExpressionOptions>()
                     {
-                        { "OFSTEDRATINGCODE", "SearchInFilterExpression"},
-                        { "RELIGIOUSCHARACTERCODE", "SearchInFilterExpression" },
-                        { "GEODISTANCE", "LessThanOrEqualToExpression" },
-                        { "GEOLOCATION", "SearchGeoLocationFilterExpression" }
+                        {
+                            "OFSTEDRATINGCODE",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("SearchInFilterExpression")
+                                .WithFilterExpressionDelimiterValue(",").Create()
+                        },
+                        {
+                            "RELIGIOUSCHARACTERCODE",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("SearchInFilterExpression")
+                                .WithFilterExpressionDelimiterValue("|").Create()
+                        },
+                        { 
+                            "GEODISTANCE",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("LessThanOrEqualToExpression").Create()
+                        },
+                        {
+                            "GEOLOCATION",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("SearchGeoLocationFilterExpression").Create()
+                        }
                     })
                     .Create();
 
@@ -43,7 +61,7 @@ public class SearchFilterExpressionBuilderTests
 
         List<SearchFilterRequest> searchFilterRequests =
             SearchFilterRequestBuilder.Create().BuildSearchFilterRequestsWith(
-               ("OFSTEDRATINGCODE", new List<object> { "2", "5", "9", "12" }),
+               ("OFSTEDRATINGCODE", new List<object> { "The good", "The bad", "The ugly"}),
                ("RELIGIOUSCHARACTERCODE", new List<object> { "00", "02" })
             )
             .BuildSearchFilterRequests();
@@ -54,7 +72,7 @@ public class SearchFilterExpressionBuilderTests
 
         // assert.
         searchFilterResult.Should().NotBeNullOrWhiteSpace(searchFilterResult);
-        searchFilterResult.Should().Be("search.in(OFSTEDRATINGCODE, '2,5,9,12') and search.in(RELIGIOUSCHARACTERCODE, '00,02')");
+        searchFilterResult.Should().Be("search.in(OFSTEDRATINGCODE, 'The good,The bad,The ugly', ',') and search.in(RELIGIOUSCHARACTERCODE, '00|02', '|')");
     }
 
     [Fact]
@@ -70,12 +88,30 @@ public class SearchFilterExpressionBuilderTests
         FilterKeyToFilterExpressionMapOptions filterKeyToFilterExpressionMapOptions =
                 new FilterKeyToFilterExpressionMapOptionsBuilder()
                     .WithFilterChainingLogicalOperator(filterChainingLogicalOperatorKey: "AndLogicalOperator")
-                    .WithSearchFilterToExpressionMap(searchFilterToExpressionMap: new Dictionary<string, string>()
+                    .WithSearchFilterToExpressionMap(searchFilterToExpressionMap: new Dictionary<string, FilterExpressionOptions>()
                     {
-                        { "OFSTEDRATINGCODE", "SearchInFilterExpression"},
-                        { "RELIGIOUSCHARACTERCODE", "SearchInFilterExpression" },
-                        { "GEODISTANCE", "LessThanOrEqualToExpression" },
-                        { "GEOLOCATION", "SearchGeoLocationFilterExpression" }
+                        {
+                            "OFSTEDRATINGCODE",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("SearchInFilterExpression")
+                                .WithFilterExpressionDelimiterValue(",").Create()
+                        },
+                        {
+                            "RELIGIOUSCHARACTERCODE",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("SearchInFilterExpression")
+                                .WithFilterExpressionDelimiterValue("|").Create()
+                        },
+                        {
+                            "GEODISTANCE",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("LessThanOrEqualToExpression").Create()
+                        },
+                        {
+                            "GEOLOCATION",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("SearchGeoLocationFilterExpression").Create()
+                        }
                     })
                     .Create();
 

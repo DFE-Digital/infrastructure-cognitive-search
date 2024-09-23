@@ -8,8 +8,14 @@
     /// "FilterKeyToFilterExpressionMapOptions": {
     ///     "FilterChainingLogicalOperator": "AndLogicalOperator",
     ///     "SearchFilterToExpressionMap": {
-    ///         "RELIGIOUSCHARACTERCODE": "SearchInFilterExpression",
-    ///         "OFSTEDRATINGCODE": "SearchInFilterExpression"
+    ///         "RELIGIOUSCHARACTERCODE": {
+    ///             "FilterExpressionKey": "SearchInFilterExpression",
+    ///             "FilterExpressionValuesDelimiter", ","
+    ///         },
+    ///         "OFSTEDRATINGCODE": {
+    ///             "FilterExpressionKey": "SearchInFilterExpression",
+    ///             "FilterExpressionValuesDelimiter", ","
+    ///         }
     ///     }
     /// }
     /// </code>
@@ -31,6 +37,37 @@
         /// <summary>
         /// The dictionary used to reconcile the incoming request key with the actual search filter expression to apply.
         /// </summary>
-        public IDictionary<string, string> SearchFilterToExpressionMap { get; set; } = new Dictionary<string, string>();
+        public IDictionary<string, FilterExpressionOptions> SearchFilterToExpressionMap { get; set; } = new Dictionary<string, FilterExpressionOptions>();
+    }
+
+    /// <summary>
+    /// Configuration options for establishing the specific filter expression options that are defined
+    /// under the <see cref="FilterKeyToFilterExpressionMapOptions"/>. This options section allows
+    /// for the specification of the required filter expression key (i.e. the named filter expression
+    /// such as 'SearchInFilterExpression' or 'LessThanOrEqualToExpression' for example, and the
+    /// accompanying value delimiter if required (i.e. for search.in we generally specify a comma
+    /// delimiter so an expression which encapsulates values with whitespace can be accommodated).
+    /// </summary>
+    public sealed class FilterExpressionOptions
+    {
+        /// <summary>
+        /// The key to the actual filter expression instance to derive. This (by convention) is defined
+        /// by default in the DI container and uses the class name as the key to resolve the required
+        /// filter expression type, e.g. 'SearchInFilterExpression'.
+        /// </summary>
+        public string FilterExpressionKey { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The delimiter can be applied (optionally) for those expression types that require a
+        /// delimiter to be specified between provisioned values, such as the searcvh.in expression.
+        /// This allows the underlying Azure AI search mechanism to correctly delimiter values
+        /// even if whitespace is present.
+        /// </summary>
+        public string FilterExpressionValuesDelimiter { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Check to determine whether a filter value delimiter has been specified.
+        /// </summary>
+        public bool HasValuesDelimiter => !string.IsNullOrWhiteSpace(FilterExpressionValuesDelimiter);
     }
 }

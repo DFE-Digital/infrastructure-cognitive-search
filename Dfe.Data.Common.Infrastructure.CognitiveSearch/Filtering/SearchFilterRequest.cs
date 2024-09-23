@@ -22,6 +22,11 @@ public sealed class SearchFilterRequest
     public object[] FilterValues { get; }
 
     /// <summary>
+    /// The string to be used by the specified filter expression to delimit the filter values provisioned.
+    /// </summary>
+    public string FilterValuesDelimiter { get; private set; } = string.Empty;
+
+    /// <summary>
     /// Constructor ensures immutability for filter key and filter values provisioned.
     /// </summary>
     /// <param name="filterKey">
@@ -38,7 +43,7 @@ public sealed class SearchFilterRequest
     /// </exception>
     public SearchFilterRequest(string filterKey, IEnumerable<object> filterValues)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(filterKey);
+        ArgumentException.ThrowIfNullOrEmpty(filterKey);
         ArgumentNullException.ThrowIfNull(filterValues);
 
         if (!filterValues.Any())
@@ -49,5 +54,18 @@ public sealed class SearchFilterRequest
 
         FilterKey = filterKey;
         FilterValues = filterValues.ToArray();
+    }
+
+    /// <summary>
+    /// Allows a filter value delimiter to be specified, if required by the underlying expression type.
+    /// </summary>
+    /// <param name="filterValuesDelimiter">
+    /// The string used to delimit filter values.
+    /// </param>
+    public void SetFilterValuesDelimiter(string filterValuesDelimiter)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(filterValuesDelimiter);
+
+        FilterValuesDelimiter = filterValuesDelimiter;
     }
 }
