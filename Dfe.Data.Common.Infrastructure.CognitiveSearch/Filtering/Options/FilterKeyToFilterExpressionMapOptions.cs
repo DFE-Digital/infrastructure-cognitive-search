@@ -55,7 +55,7 @@
         /// by default in the DI container and uses the class name as the key to resolve the required
         /// filter expression type, e.g. 'SearchInFilterExpression'.
         /// </summary>
-        public string FilterExpressionKey { get; set; }
+        public string FilterExpressionKey { get; set; } = string.Empty;
 
         /// <summary>
         /// The delimiter can be applied (optionally) for those expression types that require a

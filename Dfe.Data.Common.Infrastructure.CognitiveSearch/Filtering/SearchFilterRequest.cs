@@ -24,7 +24,7 @@ public sealed class SearchFilterRequest
     /// <summary>
     /// The string to be used by the specified filter expression to delimit the filter values provisioned.
     /// </summary>
-    public string FilterValuesDelimiter { get; private set; }
+    public string FilterValuesDelimiter { get; private set; } = string.Empty;
 
     /// <summary>
     /// Constructor ensures immutability for filter key and filter values provisioned.

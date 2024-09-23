@@ -4,14 +4,14 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.TestDou
 {
     internal class FilterExpressionOptionsBuilder
     {
-        private string _filterExpressionKey;
-        private string _filterExpressionDelimiterValue;
+        private string? _filterExpressionKey;
+        private string? _filterExpressionDelimiterValue;
 
         public FilterExpressionOptions Create() =>
             new()
             {
-                FilterExpressionKey = _filterExpressionKey,
-                FilterExpressionValuesDelimiter = _filterExpressionDelimiterValue
+                FilterExpressionKey = _filterExpressionKey!,
+                FilterExpressionValuesDelimiter = _filterExpressionDelimiterValue!
             };
 
         public FilterExpressionOptionsBuilder WithSearchFilterExpressionKey(string filterExpressionKey)
