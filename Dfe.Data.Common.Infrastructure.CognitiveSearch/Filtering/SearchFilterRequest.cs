@@ -43,7 +43,7 @@ public sealed class SearchFilterRequest
     /// </exception>
     public SearchFilterRequest(string filterKey, IEnumerable<object> filterValues)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(filterKey);
+        ArgumentException.ThrowIfNullOrEmpty(filterKey);
         ArgumentNullException.ThrowIfNull(filterValues);
 
         if (!filterValues.Any())

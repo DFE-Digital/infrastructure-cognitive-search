@@ -61,7 +61,7 @@ public sealed class SearchInFilterExpression : ISearchFilterExpression
                 }
             });
 
-        // apply the default delimiter id we have no configured override.
+        // apply the default delimiter if we have no configured override.
         if (string.IsNullOrWhiteSpace(searchFilterRequest.FilterValuesDelimiter))
         {
             searchFilterRequest.SetFilterValuesDelimiter(DefaultFilterValuesDelimiter);
