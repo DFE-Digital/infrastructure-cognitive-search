@@ -135,6 +135,4 @@ public class SearchFilterExpressionBuilderTests
         searchFilterResult.Should().NotBeNullOrWhiteSpace(searchFilterResult);
         searchFilterResult.Should().Be("geo.distance(Location,geography'POINT(-1.69469 54.87835)') and le 4.8");
     }
-
-    // TODO: add another test in here!!!!!!
 }
