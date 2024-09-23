@@ -27,12 +27,30 @@ public class SearchFilterExpressionBuilderTests
         FilterKeyToFilterExpressionMapOptions filterKeyToFilterExpressionMapOptions =
                 new FilterKeyToFilterExpressionMapOptionsBuilder()
                     .WithFilterChainingLogicalOperator(filterChainingLogicalOperatorKey: "AndLogicalOperator")
-                    .WithSearchFilterToExpressionMap(searchFilterToExpressionMap: new Dictionary<string, string>()
+                    .WithSearchFilterToExpressionMap(searchFilterToExpressionMap: new Dictionary<string, FilterExpressionOptions>()
                     {
-                        { "OFSTEDRATINGCODE", "SearchInFilterExpression"},
-                        { "RELIGIOUSCHARACTERCODE", "SearchInFilterExpression" },
-                        { "GEODISTANCE", "LessThanOrEqualToExpression" },
-                        { "GEOLOCATION", "SearchGeoLocationFilterExpression" }
+                        {
+                            "OFSTEDRATINGCODE",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("SearchInFilterExpression")
+                                .WithFilterExpressionDelimiterValue(",").Create()
+                        },
+                        {
+                            "RELIGIOUSCHARACTERCODE",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("SearchInFilterExpression")
+                                .WithFilterExpressionDelimiterValue("|").Create()
+                        },
+                        { 
+                            "GEODISTANCE",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("LessThanOrEqualToExpression").Create()
+                        },
+                        {
+                            "GEOLOCATION",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("SearchGeoLocationFilterExpression").Create()
+                        }
                     })
                     .Create();
 
@@ -54,7 +72,7 @@ public class SearchFilterExpressionBuilderTests
 
         // assert.
         searchFilterResult.Should().NotBeNullOrWhiteSpace(searchFilterResult);
-        searchFilterResult.Should().Be("search.in(OFSTEDRATINGCODE, 'The good,The bad,The ugly', ',') and search.in(RELIGIOUSCHARACTERCODE, '00,02', ',')");
+        searchFilterResult.Should().Be("search.in(OFSTEDRATINGCODE, 'The good,The bad,The ugly', ',') and search.in(RELIGIOUSCHARACTERCODE, '00|02', '|')");
     }
 
     [Fact]
@@ -70,12 +88,30 @@ public class SearchFilterExpressionBuilderTests
         FilterKeyToFilterExpressionMapOptions filterKeyToFilterExpressionMapOptions =
                 new FilterKeyToFilterExpressionMapOptionsBuilder()
                     .WithFilterChainingLogicalOperator(filterChainingLogicalOperatorKey: "AndLogicalOperator")
-                    .WithSearchFilterToExpressionMap(searchFilterToExpressionMap: new Dictionary<string, string>()
+                    .WithSearchFilterToExpressionMap(searchFilterToExpressionMap: new Dictionary<string, FilterExpressionOptions>()
                     {
-                        { "OFSTEDRATINGCODE", "SearchInFilterExpression"},
-                        { "RELIGIOUSCHARACTERCODE", "SearchInFilterExpression" },
-                        { "GEODISTANCE", "LessThanOrEqualToExpression" },
-                        { "GEOLOCATION", "SearchGeoLocationFilterExpression" }
+                        {
+                            "OFSTEDRATINGCODE",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("SearchInFilterExpression")
+                                .WithFilterExpressionDelimiterValue(",").Create()
+                        },
+                        {
+                            "RELIGIOUSCHARACTERCODE",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("SearchInFilterExpression")
+                                .WithFilterExpressionDelimiterValue("|").Create()
+                        },
+                        {
+                            "GEODISTANCE",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("LessThanOrEqualToExpression").Create()
+                        },
+                        {
+                            "GEOLOCATION",
+                            new FilterExpressionOptionsBuilder()
+                                .WithSearchFilterExpressionKey("SearchGeoLocationFilterExpression").Create()
+                        }
                     })
                     .Create();
 
@@ -99,4 +135,6 @@ public class SearchFilterExpressionBuilderTests
         searchFilterResult.Should().NotBeNullOrWhiteSpace(searchFilterResult);
         searchFilterResult.Should().Be("geo.distance(Location,geography'POINT(-1.69469 54.87835)') and le 4.8");
     }
+
+    // TODO: add another test in here!!!!!!
 }

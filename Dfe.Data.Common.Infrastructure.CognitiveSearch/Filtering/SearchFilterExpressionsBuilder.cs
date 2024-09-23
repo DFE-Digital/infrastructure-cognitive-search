@@ -25,8 +25,14 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering;
 /// "FilterKeyToFilterExpressionMapOptions": {
 ///     "FilterChainingLogicalOperator": "AndLogicalOperator",
 ///     "SearchFilterToExpressionMap": {
-///         "RELIGIOUSCHARACTERCODE": "SearchInFilterExpression",
-///         "OFSTEDRATINGCODE": "SearchInFilterExpression"
+///         "RELIGIOUSCHARACTERCODE": {
+///             "FilterExpressionKey": "SearchInFilterExpression",
+///             "FilterExpressionValuesDelimiter", ","
+///         },
+///         "OFSTEDRATINGCODE": {
+///             "FilterExpressionKey": "SearchInFilterExpression",
+///             "FilterExpressionValuesDelimiter", ","
+///         }
 ///     }
 /// }
 /// </code>
@@ -120,9 +126,16 @@ public sealed class SearchFilterExpressionsBuilder : ISearchFilterExpressionsBui
                 _filterKeyToFilterExpressionMapOptions
                     .SearchFilterToExpressionMap.ContainsKey(searchFilterRequest.FilterKey)))
         {
+            FilterExpressionOptions filterExpressionOptions =
+                _filterKeyToFilterExpressionMapOptions.SearchFilterToExpressionMap[searchFilterRequest.FilterKey];
+
+            // Assign the configured value delimiter if one is present.
+            if (filterExpressionOptions.HasValuesDelimiter){
+                searchFilterRequest.SetFilterValuesDelimiter(filterExpressionOptions.FilterExpressionValuesDelimiter);
+            }
+
             ISearchFilterExpression searchFilterExpression =
-                _searchFilterExpressionFactory.CreateFilter(
-                    _filterKeyToFilterExpressionMapOptions.SearchFilterToExpressionMap[searchFilterRequest.FilterKey]);
+                _searchFilterExpressionFactory.CreateFilter(filterExpressionOptions.FilterExpressionKey);
 
             searchFilters.Add(searchFilterExpression.GetFilterExpression(searchFilterRequest));
         }

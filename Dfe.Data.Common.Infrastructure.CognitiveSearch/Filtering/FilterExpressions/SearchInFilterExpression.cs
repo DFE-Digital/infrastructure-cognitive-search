@@ -16,6 +16,11 @@ public sealed class SearchInFilterExpression : ISearchFilterExpression
     private readonly IFilterExpressionFormatter _filterExpressionFormatter;
 
     /// <summary>
+    /// Default filter value delimiter assigned if no override is provisioned in the request.
+    /// </summary>
+    private const string DefaultFilterValuesDelimiter = ",";
+
+    /// <summary>
     /// The <see cref="SearchInFilterExpression"/> uses a <see cref="IFilterExpressionFormatter"/>
     /// to help facilitate the creation of a fully configured <b>search.in</b> filter expression string.
     /// </summary>
@@ -56,12 +61,19 @@ public sealed class SearchInFilterExpression : ISearchFilterExpression
                 }
             });
 
-        _filterExpressionFormatter.SetExpressionParamsSeparator(",");
+        // apply the default delimiter id we have no configured override.
+        if (string.IsNullOrWhiteSpace(searchFilterRequest.FilterValuesDelimiter))
+        {
+            searchFilterRequest.SetFilterValuesDelimiter(DefaultFilterValuesDelimiter);
+        }
+
+        _filterExpressionFormatter.SetExpressionParamsSeparator(searchFilterRequest.FilterValuesDelimiter);
 
         return _filterExpressionFormatter
             .CreateFormattedExpression(
                 $"search.in({searchFilterRequest.FilterKey}, " +
-                $"'{_filterExpressionFormatter.CreateFilterCriteriaPlaceholders(searchFilterRequest.FilterValues)}', ',')",
-                searchFilterRequest.FilterValues);
+                $"'{_filterExpressionFormatter
+                    .CreateFilterCriteriaPlaceholders(searchFilterRequest.FilterValues)}', '{searchFilterRequest.FilterValuesDelimiter}')",
+                        searchFilterRequest.FilterValues);
     }
 }

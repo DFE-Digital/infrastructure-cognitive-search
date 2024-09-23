@@ -5,7 +5,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.TestDou
     internal class FilterKeyToFilterExpressionMapOptionsBuilder
     {
         private string _filterChainingLogicalOperatorKey = "AndLogicalOperator";
-        private IDictionary<string, string> _searchFilterToExpressionMap = new Dictionary<string, string>();
+        private IDictionary<string, FilterExpressionOptions> _searchFilterToExpressionMap = new Dictionary<string, FilterExpressionOptions>();
 
         public FilterKeyToFilterExpressionMapOptions Create() =>
             new()
@@ -14,7 +14,8 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.TestDou
                 FilterChainingLogicalOperator = _filterChainingLogicalOperatorKey,
             };
 
-        public FilterKeyToFilterExpressionMapOptionsBuilder WithSearchFilterToExpressionMap(IDictionary<string, string> searchFilterToExpressionMap)
+        public FilterKeyToFilterExpressionMapOptionsBuilder WithSearchFilterToExpressionMap(
+            IDictionary<string, FilterExpressionOptions> searchFilterToExpressionMap)
         {
             _searchFilterToExpressionMap = searchFilterToExpressionMap;
             return this;

@@ -8,32 +8,50 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.FilterE
 public sealed class SearchInFilterExpressionTests
 {
     [Fact]
-    public void GetFilterExpression_MultipleFilterValues_ReturnsFormattedInExpression()
+    public void GetFilterExpression_MultipleFilterValuesAndDelimiterSpecified_ReturnsFormattedInExpression()
     {
         // arrange
         SearchInFilterExpression filterExpression = new(new DefaultFilterExpressionFormatter());
-        SearchFilterRequest context = new("filter", ["value 1", "value    2", "value3"]);
+        SearchFilterRequest request = new("filter", ["value 1", "value    2", "value3"]);
+        request.SetFilterValuesDelimiter("$");
 
-        const string expected = "search.in(filter, 'value 1,value    2,value3', ',')";
+        const string expected = "search.in(filter, 'value 1$value    2$value3', '$')";
 
         // act
-        var result = filterExpression.GetFilterExpression(context);
+        string result = filterExpression.GetFilterExpression(request);
 
         // assert
         Assert.Equal(expected, result);
     }
 
     [Fact]
-    public void GetFilterExpression_BoolFilterValues_ThrowsArgumentException()
+    public void GetFilterExpression_BoolFilterValuesAndDelimiterSpecified_ThrowsArgumentException()
     {
         // arrange
-        var filterExpression = new SearchInFilterExpression(
+        SearchInFilterExpression filterExpression = new SearchInFilterExpression(
             new DefaultFilterExpressionFormatter());
 
-        var context = new SearchFilterRequest("filter", [true]);
+        SearchFilterRequest request = new("filter", [true]);
+        request.SetFilterValuesDelimiter(",");
 
         // act, assert
-        Assert.Throws<ArgumentException>(() => filterExpression.GetFilterExpression(context));
+        Assert.Throws<ArgumentException>(() => filterExpression.GetFilterExpression(request));
+    }
+
+    [Fact]
+    public void GetFilterExpression_MultipleFilterValuesAndDelimiterNotSpecifiedWhenRequired_AppliesDefaultCommaSeparatedDelimiter()
+    {
+        // arrange
+        SearchInFilterExpression filterExpression = new(new DefaultFilterExpressionFormatter());
+        SearchFilterRequest request = new("filter", ["value 1", "value    2", "value3"]);
+
+        const string expected = "search.in(filter, 'value 1,value    2,value3', ',')";
+
+        // act.
+        string result = filterExpression.GetFilterExpression(request);
+
+        // assert
+        Assert.Equal(expected, result);
     }
 
     [Fact]
