@@ -79,6 +79,10 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
         ArgumentException.ThrowIfNullOrEmpty(searchIndex);
         ArgumentNullException.ThrowIfNull(searchOptions);
 
+        if(_ruleOptions.SearchRule == "PartialWordMatch")
+        {
+            searchKeyword = searchKeyword + "*";
+        }
 
         return InvokeSearch(
             searchIndex, (searchClient) =>
