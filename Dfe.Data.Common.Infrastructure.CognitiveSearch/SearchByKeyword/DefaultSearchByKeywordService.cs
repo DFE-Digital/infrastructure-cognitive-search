@@ -14,7 +14,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
 public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
 {
     private readonly ISearchByKeywordClientProvider _searchClientProvider;
-    private readonly SearchRuleOptions _ruleOptions;
+    private readonly ISearchRuleProvider _ruleProvider;
 
     /// <summary>
     /// The following T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers.ISearchByKeywordClientProvider
@@ -25,19 +25,16 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
     /// The T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers.ISearchByKeywordClientProvider instance
     /// used to provision a configured Azure search client provider.
     /// </param>
-    /// <param name="searchRuleOptions">
-    /// The <see cref="SearchRuleOptions"/> that specify details of how the search should be performed 
-    /// </param>
     /// <exception cref="ArgumentNullException">
     /// The exception thrown when an attempt is made to inject a null search client provider.
     /// </exception>
     public DefaultSearchByKeywordService(
         ISearchByKeywordClientProvider searchClientProvider,
-        SearchRuleOptions searchRuleOptions)
+        ISearchRuleProvider searchRuleProvider)
     {
         _searchClientProvider = searchClientProvider ??
             throw new ArgumentNullException(nameof(searchClientProvider));
-        _ruleOptions = searchRuleOptions;
+        _ruleProvider = searchRuleProvider;
     }
 
     /// <summary>
@@ -79,10 +76,7 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
         ArgumentException.ThrowIfNullOrEmpty(searchIndex);
         ArgumentNullException.ThrowIfNull(searchOptions);
 
-        if(_ruleOptions.SearchRule == "PartialWordMatch")
-        {
-            searchKeyword = searchKeyword + "*";
-        }
+        searchKeyword = _ruleProvider.ApplySearchRules(searchKeyword);
 
         return InvokeSearch(
             searchIndex, (searchClient) =>
