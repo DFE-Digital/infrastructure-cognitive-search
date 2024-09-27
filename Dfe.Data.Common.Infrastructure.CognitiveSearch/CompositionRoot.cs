@@ -66,12 +66,13 @@ public static class CompositionRoot
                        .GetSection(nameof(GeoLocationOptions))
                        .Bind(settings));
 
-
         // Register the IOptions object
         services.Configure<SearchRuleOptions>(configuration.GetSection("SearchRuleOptions"));
         // Explicitly register the settings object by delegating to the IOptions object
         services.AddSingleton(resolver =>
             resolver.GetRequiredService<IOptions<SearchRuleOptions>>().Value);
+
+        services.AddSingleton<ISearchRuleProvider, SearchRuleProvider>();
 
         services.AddHttpClient("GeoLocationHttpClient", config =>
         {
