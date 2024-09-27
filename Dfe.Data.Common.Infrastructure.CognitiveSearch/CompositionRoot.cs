@@ -14,6 +14,7 @@ using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch;
 
@@ -64,6 +65,12 @@ public static class CompositionRoot
                    configuration
                        .GetSection(nameof(GeoLocationOptions))
                        .Bind(settings));
+
+        // Register the IOptions object
+        services.Configure<SearchRuleOptions>(configuration.GetSection("SlackApi"));
+        // Explicitly register the settings object by delegating to the IOptions object
+        services.AddSingleton(resolver =>
+            resolver.GetRequiredService<IOptions<SearchRuleOptions>>().Value);
 
         services.AddHttpClient("GeoLocationHttpClient", config =>
         {

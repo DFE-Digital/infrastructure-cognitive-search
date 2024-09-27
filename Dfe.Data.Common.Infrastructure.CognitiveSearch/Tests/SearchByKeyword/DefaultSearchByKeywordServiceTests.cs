@@ -2,6 +2,7 @@
 using Azure.Search.Documents;
 using Azure.Search.Documents.Models;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Options;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Search.TestDoubles;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.SearchByKeyword.TestDoubles;
@@ -16,7 +17,32 @@ public class DefaultSearchByKeywordServiceTests
     private readonly Mock<SearchClient> _azureSearchClientMock = new();
 
     [Fact]
-    public async Task SearchAsync_ReturnsExpected()
+    public async Task SearchAsync_WithSearchRuleOption_ReturnsExpected()
+    {
+        // arrange
+        const string searchIndex = "index1";
+        const string searchKeyword = "name";
+        const string documentContentValue = "example name";
+
+        SearchOptions searchOptions = AzureSearchOptionsTestDouble.SearchOptionsWithSearchField(searchKeyword);
+        var searchResults = SearchResultsTestDouble<TestDocument>.SearchResultsWith(new TestDocument() { Name = documentContentValue });
+        _searchClientProviderMock.Setup(provider => provider.InvokeSearchClientAsync(searchIndex))
+            .ReturnsAsync(_azureSearchClientMock.Object);
+        _azureSearchClientMock.Setup(client => client.SearchAsync<TestDocument>($"{searchKeyword}*", searchOptions, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
+
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, new SearchRuleOptions { SearchRule = "PartialWordSearch" });
+
+        // act
+        var result = (await searchService.SearchAsync<TestDocument>(searchKeyword, searchIndex, searchOptions)).Value.GetResults();
+
+        // assert
+        var firstPageResult = Assert.IsType<SearchResult<TestDocument>>(result.First());
+        Assert.Equal(documentContentValue, firstPageResult.Document.Name);
+    }
+
+    [Fact]
+    public async Task SearchAsync_WithNoSearchRuleOption_ReturnsExpected()
     {
         // arrange
         const string searchIndex = "index1";
@@ -30,7 +56,7 @@ public class DefaultSearchByKeywordServiceTests
         _azureSearchClientMock.Setup(client => client.SearchAsync<TestDocument>(searchKeyword, searchOptions, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
 
-        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object);
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, new SearchRuleOptions());
 
         // act
         var result = (await searchService.SearchAsync<TestDocument>(searchKeyword, searchIndex, searchOptions)).Value.GetResults();
@@ -60,7 +86,7 @@ public class DefaultSearchByKeywordServiceTests
             .Setup(client => client.SearchAsync<TestDocument>(searchKeyword, searchOptions, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
 
-        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object);
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, new SearchRuleOptions { SearchRule = "PartialWordSearch" });
 
         // act, assert
         _ = await Assert.ThrowsAsync<ArgumentNullException>(() =>
@@ -87,7 +113,7 @@ public class DefaultSearchByKeywordServiceTests
             .Setup(client => client.SearchAsync<TestDocument>(searchKeyword, searchOptions, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
 
-        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object);
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, new SearchRuleOptions { SearchRule = "PartialWordSearch" });
 
         // act, assert
         _ = await Assert.ThrowsAsync<ArgumentException>(() =>
@@ -113,7 +139,7 @@ public class DefaultSearchByKeywordServiceTests
             .Setup(client => client.SearchAsync<TestDocument>(searchKeyword, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
 
-        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object);
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, new SearchRuleOptions { SearchRule = "PartialWordSearch" });
 
         // act, assert
         _ = await Assert.ThrowsAsync<ArgumentNullException>(() =>
