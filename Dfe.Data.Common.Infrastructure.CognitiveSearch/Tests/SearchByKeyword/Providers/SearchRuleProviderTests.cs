@@ -12,8 +12,11 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.SearchByKeyword.P
 
 public class SearchRuleProviderTests
 {
-    [Fact]
-    void ApplySearchRules_WithPartialWordMatchRuleOption_AppliesRule()
+    [Theory]
+    [InlineData("searchKeyword", "searchKeyword*")]
+    [InlineData("searchKeyword ", "searchKeyword*")]
+    [InlineData("searchTerm1 searchTerm2", "searchTerm1* searchTerm2*")]
+    void ApplySearchRules_WithPartialWordMatchRuleOption_AppliesRule(string searchInput, string expected)
     {
         // arrange
         var searchRulesOptions = new SearchRuleOptions()
@@ -24,10 +27,11 @@ public class SearchRuleProviderTests
         var provider = new SearchRuleProvider(searchRulesOptions);
 
         // act
-        var searchKeywordResult = provider.ApplySearchRules("searchKeyword");
+        var searchKeywordResult = provider.ApplySearchRules(searchInput);
 
         // assert
-        searchKeywordResult.Should().Be("searchKeyword*");
+        searchKeywordResult.Should().Be(expected);
+        searchInput.Should().NotBe(expected);
     }
 
     [Fact]

@@ -1,9 +1,4 @@
 ﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
 
@@ -18,11 +13,13 @@ public class SearchRuleProvider : ISearchRuleProvider
 
     public string ApplySearchRules(string searchKeyword)
     {
+        var searchKeywordWithRulesApplied = searchKeyword;
         if (_ruleOptions.SearchRule == "PartialWordMatch")
         {
-            //var searchKeywords = searchKeyword.Replace(" ", "* ");
-            searchKeyword = searchKeyword + "*";
+            searchKeywordWithRulesApplied = searchKeywordWithRulesApplied.TrimEnd();
+            searchKeywordWithRulesApplied = searchKeywordWithRulesApplied.Replace(" ", "* ");
+            searchKeywordWithRulesApplied = searchKeywordWithRulesApplied + "*";
         }
-        return searchKeyword;
+        return searchKeywordWithRulesApplied;
     }
 }
