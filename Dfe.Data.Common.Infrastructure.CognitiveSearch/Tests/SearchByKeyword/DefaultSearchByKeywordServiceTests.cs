@@ -8,6 +8,7 @@ using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.TestDoubles
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Search.TestDoubles;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.SearchByKeyword.TestDoubles;
 using Moq;
+using System.Data;
 using Xunit;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.SearchByKeyword;
@@ -18,13 +19,12 @@ public class DefaultSearchByKeywordServiceTests
     private readonly Mock<SearchClient> _azureSearchClientMock = new();
 
     [Fact]
-    public async Task SearchAsync_CallsSearchRuleProvider()
+    public async Task SearchAsync_NoProvider_UsesUnmodifiedSearchTerm()
     {
         // arrange
         const string searchIndex = "index1";
         const string searchKeyword = "name";
         const string documentContentValue = "example name";
-        var mockSearchProvider = SearchRuleProviderTestDouble.MockFor(searchKeyword);
 
         SearchOptions searchOptions = AzureSearchOptionsTestDouble.SearchOptionsWithSearchField(searchKeyword);
         var searchResults = SearchResultsTestDouble<TestDocument>.SearchResultsWith(new TestDocument() { Name = documentContentValue });
@@ -33,13 +33,40 @@ public class DefaultSearchByKeywordServiceTests
         _azureSearchClientMock.Setup(client => client.SearchAsync<TestDocument>(searchKeyword, searchOptions, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
 
-        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, mockSearchProvider);
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object);
 
         // act
         var result = (await searchService.SearchAsync<TestDocument>(searchKeyword, searchIndex, searchOptions)).Value.GetResults();
 
         // assert
-        Mock.Get(mockSearchProvider).Verify();
+        _azureSearchClientMock.Verify(search => search.SearchAsync<TestDocument>(searchKeyword, It.IsAny<SearchOptions>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task SearchAsync_CallsSearchRuleProvider()
+    {
+        // arrange
+        const string searchIndex = "index1";
+        const string searchKeyword = "name";
+        const string searchKeywordOut = "name*";
+        const string documentContentValue = "example name";
+        var mockSearchRuleProvider = SearchRuleProviderTestDouble.MockFor(searchKeyword, searchKeywordOut);
+
+        SearchOptions searchOptions = AzureSearchOptionsTestDouble.SearchOptionsWithSearchField(It.IsAny<string>());
+        var searchResults = SearchResultsTestDouble<TestDocument>.SearchResultsWith(new TestDocument() { Name = documentContentValue });
+        _searchClientProviderMock.Setup(provider => provider.InvokeSearchClientAsync(It.IsAny<string>()))
+            .ReturnsAsync(_azureSearchClientMock.Object);
+        _azureSearchClientMock.Setup(client => client.SearchAsync<TestDocument>(It.IsAny<string>(), searchOptions, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
+
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, mockSearchRuleProvider);
+
+        // act
+        var result = (await searchService.SearchAsync<TestDocument>(searchKeyword, searchIndex, searchOptions)).Value.GetResults();
+
+        // assert
+        Mock.Get(mockSearchRuleProvider).Verify(searchRuleProvider => searchRuleProvider.ApplySearchRules(searchKeyword), Times.Once);
+        _azureSearchClientMock.Verify(search => search.SearchAsync<TestDocument>(searchKeywordOut, It.IsAny<SearchOptions>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -52,12 +79,12 @@ public class DefaultSearchByKeywordServiceTests
 
         SearchOptions searchOptions = AzureSearchOptionsTestDouble.SearchOptionsWithSearchField(searchKeyword);
         var searchResults = SearchResultsTestDouble<TestDocument>.SearchResultsWith(new TestDocument() { Name = documentContentValue });
-        _searchClientProviderMock.Setup(provider => provider.InvokeSearchClientAsync(searchIndex))
-            .ReturnsAsync(_azureSearchClientMock.Object);
-        _azureSearchClientMock.Setup(client => client.SearchAsync<TestDocument>(searchKeyword, searchOptions, It.IsAny<CancellationToken>()))
+        _azureSearchClientMock
+            .Setup(client => client.SearchAsync<TestDocument>(searchKeyword, searchOptions, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
-
-        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, SearchRuleProviderTestDouble.MockFor(searchKeyword));
+        _searchClientProviderMock.Setup(provider => provider.InvokeSearchClientAsync(It.IsAny<string>()))
+            .ReturnsAsync(_azureSearchClientMock.Object);
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object);
 
         // act
         var result = (await searchService.SearchAsync<TestDocument>(searchKeyword, searchIndex, searchOptions)).Value.GetResults();
@@ -87,7 +114,7 @@ public class DefaultSearchByKeywordServiceTests
             .Setup(client => client.SearchAsync<TestDocument>(searchKeyword, searchOptions, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
 
-        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, SearchRuleProviderTestDouble.MockFor(searchKeyword));
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object);
 
         // act, assert
         _ = await Assert.ThrowsAsync<ArgumentNullException>(() =>
@@ -114,7 +141,7 @@ public class DefaultSearchByKeywordServiceTests
             .Setup(client => client.SearchAsync<TestDocument>(searchKeyword, searchOptions, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
 
-        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, SearchRuleProviderTestDouble.MockFor(searchKeyword));
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object);
 
         // act, assert
         _ = await Assert.ThrowsAsync<ArgumentException>(() =>
@@ -140,7 +167,7 @@ public class DefaultSearchByKeywordServiceTests
             .Setup(client => client.SearchAsync<TestDocument>(searchKeyword, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
 
-        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, SearchRuleProviderTestDouble.MockFor(searchKeyword));
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object);
 
         // act, assert
         _ = await Assert.ThrowsAsync<ArgumentNullException>(() =>

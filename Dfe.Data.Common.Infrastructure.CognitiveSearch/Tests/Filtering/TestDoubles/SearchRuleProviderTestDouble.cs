@@ -5,11 +5,11 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.TestDou
 
 public static class SearchRuleProviderTestDouble
 {
-    public static ISearchRuleProvider MockFor(string keyword)
+    public static ISearchRuleProvider MockFor(string keywordIn, string keywordOut)
     {
         var mock = new Mock<ISearchRuleProvider>();
-        mock.Setup(x => x.ApplySearchRules(keyword))
-            .Returns(keyword)
+        mock.Setup(x => x.ApplySearchRules(keywordIn))
+            .Returns(keywordOut)
             .Verifiable();
         return mock.Object;
     }

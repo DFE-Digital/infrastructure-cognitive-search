@@ -14,7 +14,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
 public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
 {
     private readonly ISearchByKeywordClientProvider _searchClientProvider;
-    private readonly ISearchRuleProvider _ruleProvider;
+    private readonly ISearchRuleProvider? _ruleProvider;
 
     /// <summary>
     /// The following T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers.ISearchByKeywordClientProvider
@@ -29,13 +29,34 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
     /// The exception thrown when an attempt is made to inject a null search client provider.
     /// </exception>
     public DefaultSearchByKeywordService(
-        ISearchByKeywordClientProvider searchClientProvider,
-        ISearchRuleProvider searchRuleProvider)
+        ISearchByKeywordClientProvider searchClientProvider)
     {
         _searchClientProvider = searchClientProvider ??
             throw new ArgumentNullException(nameof(searchClientProvider));
+    }
+
+    /// <summary>
+    /// The following T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers.ISearchByKeywordClientProvider
+    /// dependency Provides a contract by which to derive (by index name) a configured T:Azure.Search.Documents.SearchClient
+    /// for use when making search by key-word requests.
+    /// </summary>
+    /// <param name="searchClientProvider">
+    /// The T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers.ISearchByKeywordClientProvider instance
+    /// used to provision a configured Azure search client provider.
+    /// </param>
+    /// <param name="searchRuleProvider">
+    /// The implementation of <see cref="ISearchRuleProvider"/>
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// The exception thrown when an attempt is made to inject a null search client provider.
+    /// </exception>
+    public DefaultSearchByKeywordService(
+        ISearchByKeywordClientProvider searchClientProvider,
+        ISearchRuleProvider searchRuleProvider) : this(searchClientProvider)
+    {
         _ruleProvider = searchRuleProvider;
     }
+
 
     /// <summary>
     /// Makes a call to the underlying azure search service client using
@@ -76,7 +97,7 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
         ArgumentException.ThrowIfNullOrEmpty(searchIndex);
         ArgumentNullException.ThrowIfNull(searchOptions);
 
-        searchKeyword = _ruleProvider.ApplySearchRules(searchKeyword);
+        searchKeyword = _ruleProvider?.ApplySearchRules(searchKeyword) ?? searchKeyword;
 
         return InvokeSearch(
             searchIndex, (searchClient) =>
