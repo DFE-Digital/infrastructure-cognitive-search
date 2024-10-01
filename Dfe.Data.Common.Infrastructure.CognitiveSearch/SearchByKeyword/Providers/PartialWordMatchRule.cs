@@ -28,12 +28,11 @@ public class PartialWordMatchRule : ISearchRule
     {
         if (_ruleOptions.SearchRule == "PartialWordMatch") // only 1 search rule so far
         {
-            var searchKeywordWithRulesApplied = new StringBuilder(searchKeyword.TrimEnd());
-            searchKeywordWithRulesApplied.Replace(" ", "* ");
-            searchKeywordWithRulesApplied.Append('*');
-            return searchKeywordWithRulesApplied.ToString();
+            return new StringBuilder(searchKeyword.TrimEnd())
+                .Replace(" ", "* ")
+                .Append('*')
+                .ToString();
         }
-
         return searchKeyword;
     }
 }
