@@ -50,7 +50,7 @@ public class DefaultSearchByKeywordServiceTests
         const string searchKeyword = "name";
         const string searchKeywordOut = "name*";
         const string documentContentValue = "example name";
-        var mockSearchRuleProvider = SearchRuleProviderTestDouble.MockFor(searchKeyword, searchKeywordOut);
+        var mockSearchRuleProvider = PartialWordMatchRuleTestDouble.MockFor(searchKeyword, searchKeywordOut);
 
         SearchOptions searchOptions = AzureSearchOptionsTestDouble.SearchOptionsWithSearchField(It.IsAny<string>());
         var searchResults = SearchResultsTestDouble<TestDocument>.SearchResultsWith(new TestDocument() { Name = documentContentValue });

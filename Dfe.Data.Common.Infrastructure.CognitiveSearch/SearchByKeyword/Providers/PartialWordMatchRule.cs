@@ -6,7 +6,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Provide
 /// <summary>
 /// Facilitates search rules to be specified when running a search
 /// </summary>
-public class SearchRuleProvider : ISearchRuleProvider
+public class PartialWordMatchRule : ISearchRule
 {
     private SearchRuleOptions _ruleOptions;
 
@@ -14,7 +14,7 @@ public class SearchRuleProvider : ISearchRuleProvider
     /// Construct the saerch rules provider, injecting into it the <see cref="SearchRuleOptions"/> to be applied
     /// </summary>
     /// <param name="searchRuleOptions"></param>
-    public SearchRuleProvider(SearchRuleOptions searchRuleOptions)
+    public PartialWordMatchRule(SearchRuleOptions searchRuleOptions)
     {
         _ruleOptions = searchRuleOptions;
     }

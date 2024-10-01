@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.SearchByKeyword.Providers;
 
-public class SearchRuleProviderTests
+public class PartialWordMatchRuleTests
 {
     [Theory]
     [InlineData("searchKeyword", "searchKeyword*")]
@@ -24,7 +24,7 @@ public class SearchRuleProviderTests
             SearchRule = "PartialWordMatch"
         };
 
-        var provider = new SearchRuleProvider(searchRulesOptions);
+        var provider = new PartialWordMatchRule(searchRulesOptions);
 
         // act
         var searchKeywordResult = provider.ApplySearchRules(searchInput);
@@ -43,7 +43,7 @@ public class SearchRuleProviderTests
             SearchRule = "a nonexistent rule"
         };
 
-        var provider = new SearchRuleProvider(searchRulesOptions);
+        var provider = new PartialWordMatchRule(searchRulesOptions);
 
         // act
         var searchKeywordResult = provider.ApplySearchRules("searchKeyword");
@@ -58,7 +58,7 @@ public class SearchRuleProviderTests
         // arrange
         var searchRulesOptions = new SearchRuleOptions();
 
-        var provider = new SearchRuleProvider(searchRulesOptions);
+        var provider = new PartialWordMatchRule(searchRulesOptions);
 
         // act
         var searchKeywordResult = provider.ApplySearchRules("searchKeyword");

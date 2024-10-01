@@ -72,7 +72,7 @@ public static class CompositionRoot
         services.AddSingleton(resolver =>
             resolver.GetRequiredService<IOptions<SearchRuleOptions>>().Value);
 
-        services.AddSingleton<ISearchRuleProvider, SearchRuleProvider>();
+        services.AddSingleton<ISearchRule, PartialWordMatchRule>();
 
         services.AddHttpClient("GeoLocationHttpClient", config =>
         {

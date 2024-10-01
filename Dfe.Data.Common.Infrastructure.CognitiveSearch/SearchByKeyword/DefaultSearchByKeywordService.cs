@@ -14,7 +14,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
 public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
 {
     private readonly ISearchByKeywordClientProvider _searchClientProvider;
-    private readonly ISearchRuleProvider? _ruleProvider;
+    private readonly ISearchRule? _ruleProvider;
 
     /// <summary>
     /// The following T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers.ISearchByKeywordClientProvider
@@ -45,14 +45,14 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
     /// used to provision a configured Azure search client provider.
     /// </param>
     /// <param name="searchRuleProvider">
-    /// The implementation of <see cref="ISearchRuleProvider"/>
+    /// The implementation of <see cref="ISearchRule"/>
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// The exception thrown when an attempt is made to inject a null search client provider.
     /// </exception>
     public DefaultSearchByKeywordService(
         ISearchByKeywordClientProvider searchClientProvider,
-        ISearchRuleProvider searchRuleProvider) : this(searchClientProvider)
+        ISearchRule searchRuleProvider) : this(searchClientProvider)
     {
         _ruleProvider = searchRuleProvider;
     }

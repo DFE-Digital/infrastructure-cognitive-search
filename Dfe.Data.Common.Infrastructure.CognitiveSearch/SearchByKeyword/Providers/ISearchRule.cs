@@ -5,7 +5,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Provide
 /// <summary>
 /// Definition of a provider of search rule that can be used by the search implementation
 /// </summary>
-public interface ISearchRuleProvider
+public interface ISearchRule
 {
     /// <summary>
     /// Apply optional search rules set in the <see cref="SearchRuleOptions"/> to the search keyword
