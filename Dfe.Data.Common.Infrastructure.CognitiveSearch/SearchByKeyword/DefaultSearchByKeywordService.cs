@@ -14,7 +14,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
 public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
 {
     private readonly ISearchByKeywordClientProvider _searchClientProvider;
-    private readonly ISearchRule? _ruleProvider;
+    private readonly ISearchRule? _searchRule;
 
     /// <summary>
     /// The following T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers.ISearchByKeywordClientProvider
@@ -54,7 +54,7 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
         ISearchByKeywordClientProvider searchClientProvider,
         ISearchRule searchRuleProvider) : this(searchClientProvider)
     {
-        _ruleProvider = searchRuleProvider;
+        _searchRule = searchRuleProvider;
     }
 
 
@@ -97,7 +97,7 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
         ArgumentException.ThrowIfNullOrEmpty(searchIndex);
         ArgumentNullException.ThrowIfNull(searchOptions);
 
-        searchKeyword = _ruleProvider?.ApplySearchRules(searchKeyword) ?? searchKeyword;
+        searchKeyword = _searchRule?.ApplySearchRules(searchKeyword) ?? searchKeyword;
 
         return InvokeSearch(
             searchIndex, (searchClient) =>
