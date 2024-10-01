@@ -44,7 +44,7 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
     /// The T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers.ISearchByKeywordClientProvider instance
     /// used to provision a configured Azure search client provider.
     /// </param>
-    /// <param name="searchRuleProvider">
+    /// <param name="searchRule">
     /// The implementation of <see cref="ISearchRule"/>
     /// </param>
     /// <exception cref="ArgumentNullException">
@@ -52,9 +52,9 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
     /// </exception>
     public DefaultSearchByKeywordService(
         ISearchByKeywordClientProvider searchClientProvider,
-        ISearchRule searchRuleProvider) : this(searchClientProvider)
+        ISearchRule searchRule) : this(searchClientProvider)
     {
-        _searchRule = searchRuleProvider;
+        _searchRule = searchRule;
     }
 
 
