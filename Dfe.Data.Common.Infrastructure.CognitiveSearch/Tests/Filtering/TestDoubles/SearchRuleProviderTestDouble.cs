@@ -8,7 +8,7 @@ public static class SearchRuleProviderTestDouble
     public static ISearchRuleProvider MockFor(string keywordIn, string keywordOut)
     {
         var mock = new Mock<ISearchRuleProvider>();
-        mock.Setup(x => x.ApplySearchRules(keywordIn))
+        mock.Setup(provider => provider.ApplySearchRules(keywordIn))
             .Returns(keywordOut)
             .Verifiable();
         return mock.Object;

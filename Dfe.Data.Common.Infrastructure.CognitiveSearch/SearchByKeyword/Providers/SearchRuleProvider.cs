@@ -1,4 +1,5 @@
 ﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Options;
+using System.Text;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
 
@@ -25,13 +26,14 @@ public class SearchRuleProvider : ISearchRuleProvider
     /// <returns></returns>
     public string ApplySearchRules(string searchKeyword)
     {
-        var searchKeywordWithRulesApplied = searchKeyword;
         if (_ruleOptions.SearchRule == "PartialWordMatch") // only 1 search rule so far
         {
-            searchKeywordWithRulesApplied = searchKeywordWithRulesApplied.TrimEnd();
-            searchKeywordWithRulesApplied = searchKeywordWithRulesApplied.Replace(" ", "* ");
-            searchKeywordWithRulesApplied = searchKeywordWithRulesApplied + "*";
+            var searchKeywordWithRulesApplied = new StringBuilder(searchKeyword.TrimEnd());
+            searchKeywordWithRulesApplied.Replace(" ", "* ");
+            searchKeywordWithRulesApplied.Append('*');
+            return searchKeywordWithRulesApplied.ToString();
         }
-        return searchKeywordWithRulesApplied;
+
+        return searchKeyword;
     }
 }
