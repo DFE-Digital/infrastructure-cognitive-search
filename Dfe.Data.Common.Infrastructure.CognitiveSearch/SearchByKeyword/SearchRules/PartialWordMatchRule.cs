@@ -1,7 +1,7 @@
 ﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Options;
 using System.Text;
 
-namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
+namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.SearchRules;
 
 /// <summary>
 /// Facilitates search rules to be specified when running a search

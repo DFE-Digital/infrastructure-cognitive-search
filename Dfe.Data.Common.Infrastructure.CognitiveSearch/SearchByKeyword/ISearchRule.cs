@@ -1,6 +1,6 @@
 ﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Options;
 
-namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
+namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
 
 /// <summary>
 /// Definition of a provider of search rule that can be used by the search implementation

@@ -1,11 +1,6 @@
 ﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Options;
-using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.SearchRules;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.SearchByKeyword.Providers;
@@ -24,7 +19,7 @@ public class PartialWordMatchRuleTests
             SearchRule = "PartialWordMatch"
         };
 
-        var provider = new PartialWordMatchRule(searchRulesOptions);
+        var provider = new CognitiveSearch.SearchByKeyword.SearchRules.PartialWordMatchRule(searchRulesOptions);
 
         // act
         var searchKeywordResult = provider.ApplySearchRules(searchInput);

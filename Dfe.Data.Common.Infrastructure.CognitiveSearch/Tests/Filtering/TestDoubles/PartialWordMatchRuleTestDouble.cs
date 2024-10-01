@@ -1,4 +1,4 @@
-﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
+﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
 using Moq;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.TestDoubles;
