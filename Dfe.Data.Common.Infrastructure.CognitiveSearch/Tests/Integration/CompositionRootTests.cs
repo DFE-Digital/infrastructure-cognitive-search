@@ -14,7 +14,7 @@ using System.Dynamic;
 using System.Net;
 using Xunit;
 
-namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
+namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Integration
 {
     public sealed class CompositionRootTests : IClassFixture<ConfigBuilder>, IClassFixture<CompositionRootServiceProvider>
     {
@@ -53,12 +53,12 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
 
             // act
             var response =
-                await searchByKeywordService
+                await searchByKeywordService?
                     .SearchAsync<ExpandoObject>(
                         searchKeyword: "Test",
                         searchIndex: "Index",
                         searchOptions: new Azure.Search.Documents.SearchOptions()
-                    );
+                    )!;
 
             response.Should().NotBeNull();
         }
@@ -98,7 +98,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
         }
 
         [Fact]
-        public async Task AddAzureSearchFilterServices_RegistersAllDependencies()
+        public void AddAzureSearchFilterServices_RegistersAllDependencies()
         {
             Dictionary<string, string?> config = new() {
                 { "FilterKeyToFilterExpressionMapOptions:FilterChainingLogicalOperator", "AndLogicalOperator" },
