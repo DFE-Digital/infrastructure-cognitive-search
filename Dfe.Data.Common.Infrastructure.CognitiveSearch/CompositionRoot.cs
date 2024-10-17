@@ -11,9 +11,11 @@ using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByGeoLocation.Provide
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Options;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.SearchRules;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch;
 
@@ -92,6 +94,14 @@ public static class CompositionRoot
                        .Bind(settings))
                        .ValidateDataAnnotations()
                        .ValidateOnStart();
+
+        // Register the IOptions object
+        services.Configure<SearchRuleOptions>(configuration.GetSection("SearchRuleOptions"));
+        // Explicitly register the settings object by delegating to the IOptions object
+        services.AddSingleton(resolver =>
+            resolver.GetRequiredService<IOptions<SearchRuleOptions>>().Value);
+
+        services.AddSingleton<ISearchRule, PartialWordMatchRule>();
 
         services.AddHttpClient("GeoLocationHttpClient", config =>
         {
