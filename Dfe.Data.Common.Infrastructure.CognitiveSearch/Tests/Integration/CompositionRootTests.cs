@@ -14,7 +14,7 @@ using System.Dynamic;
 using System.Net;
 using Xunit;
 
-namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
+namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Integration
 {
     public sealed class CompositionRootTests : IClassFixture<ConfigBuilder>, IClassFixture<CompositionRootServiceProvider>
     {
@@ -30,6 +30,8 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
         [Fact]
         public async Task AddAzureSearchServices_RegistersAllDependencies()
         {
+            await Task.Delay(500); // allow test infrastructure time to compose the service provider when async.
+
             Dictionary<string, string?> config = new() {
                 {"AzureSearchConnectionOptions:Credentials", "credentials" },
                 {"AzureSearchConnectionOptions:EndpointUri", "https://test-search-service-uri"}
@@ -53,12 +55,12 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
 
             // act
             var response =
-                await searchByKeywordService
+                await searchByKeywordService?
                     .SearchAsync<ExpandoObject>(
                         searchKeyword: "Test",
                         searchIndex: "Index",
                         searchOptions: new Azure.Search.Documents.SearchOptions()
-                    );
+                    )!;
 
             response.Should().NotBeNull();
         }
@@ -66,6 +68,8 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
         [Fact]
         public async Task AddAzureGeoLocationSearchServices_RegistersAllDependencies()
         {
+            await Task.Delay(500); // allow test infrastructure time to compose the service provider when async.
+
             Dictionary<string, string?> config = new() {
                 {"GeoLocationOptions:MapsServiceUri", "http://test-geo-location-service-uri" },
                 {"GeoLocationOptions:SearchEndpoint", "Some/Test/Endpoint"},
@@ -92,13 +96,13 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
 
             // act
             GeoLocationServiceResponse? response =
-                await geoLocationService?.SearchGeoLocationAsync("TE5T 0NE")!;
+                await geoLocationService?.SearchGeoLocationAsync("TE5T-0NE")!;
 
             response?.Should().NotBeNull();
         }
 
         [Fact]
-        public async Task AddAzureSearchFilterServices_RegistersAllDependencies()
+        public void AddAzureSearchFilterServices_RegistersAllDependencies()
         {
             Dictionary<string, string?> config = new() {
                 { "FilterKeyToFilterExpressionMapOptions:FilterChainingLogicalOperator", "AndLogicalOperator" },
