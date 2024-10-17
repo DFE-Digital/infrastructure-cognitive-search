@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Shared.TestHarness
 {
-    public sealed class CompositionRootServiceProvider
+    public sealed class CompositionRootServiceProvider : IDisposable
     {
         private IServiceCollection? _services;
         private IConfiguration? _config;
@@ -12,6 +12,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Shared.TestHarnes
         public CompositionRootServiceProvider InitialiseServiceCollection(IConfiguration config)
         {
             _config = config;
+            _services?.Clear();
             _services = new ServiceCollection();
             _services.AddSingleton(config);
             return this;
@@ -44,5 +45,11 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Shared.TestHarnes
         }
 
         public IServiceProvider? Create() => _services?.BuildServiceProvider();
+
+        public void Dispose()
+        {
+            _services?.Clear();
+            _services = null!;
+        }
     }
 }
