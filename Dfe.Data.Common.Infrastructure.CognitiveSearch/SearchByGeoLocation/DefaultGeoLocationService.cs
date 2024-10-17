@@ -53,7 +53,7 @@ public sealed class DefaultGeoLocationService : IGeoLocationService
     public Task<GeoLocationServiceResponse> SearchGeoLocationAsync(string location)
     {
         ArgumentException.ThrowIfNullOrEmpty(location);
-        ArgumentException.ThrowIfNullOrWhiteSpace(_geoLocationOptions.SearchEndpointUri);
+        ArgumentException.ThrowIfNullOrWhiteSpace(_geoLocationOptions.SearchEndpoint);
         ArgumentException.ThrowIfNullOrWhiteSpace(_geoLocationOptions.MapsSubscriptionKey);
 
         return _geoLocationClientProvider.InvokeGeoLocationClientAsync().ContinueWith(
@@ -62,7 +62,7 @@ public sealed class DefaultGeoLocationService : IGeoLocationService
                 using var geoLocationResponse =
                       await geoLocationClient.Result.GetAsync(
                           string.Format(
-                              _geoLocationOptions.SearchEndpointUri, location,
+                              _geoLocationOptions.SearchEndpoint, location,
                               _geoLocationOptions.MapsSubscriptionKey),
                         HttpCompletionOption.ResponseHeadersRead)
                       .ConfigureAwait(false);

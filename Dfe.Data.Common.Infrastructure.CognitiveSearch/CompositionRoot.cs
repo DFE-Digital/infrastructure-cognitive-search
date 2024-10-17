@@ -37,7 +37,7 @@ public static class CompositionRoot
     /// The exception thrown if no valid T:Microsoft.Extensions.DependencyInjection.IServiceCollection
     /// is provisioned.
     /// </exception>
-    public static void AddDefaultCognitiveSearchServices(this IServiceCollection services, IConfiguration configuration)
+    public static void AddAzureSearchServices(this IServiceCollection services, IConfiguration configuration)
     {
         if (services is null)
         {
@@ -48,22 +48,50 @@ public static class CompositionRoot
         services.TryAddSingleton<ISearchByKeywordClientProvider, SearchByKeywordClientProvider>();
         services.TryAddSingleton<ISearchIndexNamesProvider, SearchIndexNamesProvider>();
         services.TryAddSingleton<ISearchByKeywordService, DefaultSearchByKeywordService>();
-        services.TryAddScoped<IGeoLocationClientProvider, GeoLocationClientProvider>();
-        services.TryAddScoped<IGeoLocationService, DefaultGeoLocationService>();
 
         services.AddOptions<AzureSearchConnectionOptions>()
            .Configure<IConfiguration>(
                (settings, configuration) =>
                    configuration
                        .GetSection(nameof(AzureSearchConnectionOptions))
-                       .Bind(settings));
+                       .Bind(settings))
+                       .ValidateDataAnnotations()
+                       .ValidateOnStart();
+    }
+
+    /// <summary>
+    /// Extension method which provides all the pre-registrations required to
+    /// access azure search services, and perform searches across provisioned indexes.
+    /// </summary>
+    /// <param name="services">
+    /// The originating application services onto which to register the search dependencies.
+    /// </param>
+    /// <param name="configuration">
+    /// The originating configuration block from which to derive search service settings.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// The exception thrown if no valid T:Microsoft.Extensions.DependencyInjection.IServiceCollection
+    /// is provisioned.
+    /// </exception>
+    public static void AddAzureGeoLocationSearchServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        if (services is null)
+        {
+            throw new ArgumentNullException(nameof(services),
+                "A service collection is required to configure the geo-location search dependencies.");
+        }
+
+        services.TryAddScoped<IGeoLocationClientProvider, GeoLocationClientProvider>();
+        services.TryAddScoped<IGeoLocationService, DefaultGeoLocationService>();
 
         services.AddOptions<GeoLocationOptions>()
            .Configure<IConfiguration>(
                (settings, configuration) =>
                    configuration
                        .GetSection(nameof(GeoLocationOptions))
-                       .Bind(settings));
+                       .Bind(settings))
+                       .ValidateDataAnnotations()
+                       .ValidateOnStart();
 
         services.AddHttpClient("GeoLocationHttpClient", config =>
         {
@@ -99,7 +127,7 @@ public static class CompositionRoot
     /// The exception thrown if no valid T:Microsoft.Extensions.DependencyInjection.IServiceCollection
     /// is provisioned.
     /// </exception>
-    public static void AddDefaultSearchFilterServices(this IServiceCollection services, IConfiguration configuration)
+    public static void AddAzureSearchFilterServices(this IServiceCollection services, IConfiguration configuration)
     {
         if (services is null)
         {
@@ -156,6 +184,9 @@ public static class CompositionRoot
             .Configure<IConfiguration>(
                 (settings, configuration) =>
                     configuration
-                        .GetSection("FilterKeyToFilterExpressionMapOptions").Bind(settings));
+                        .GetSection("FilterKeyToFilterExpressionMapOptions")
+                        .Bind(settings))
+                        .ValidateDataAnnotations()
+                        .ValidateOnStart();
     }
 }

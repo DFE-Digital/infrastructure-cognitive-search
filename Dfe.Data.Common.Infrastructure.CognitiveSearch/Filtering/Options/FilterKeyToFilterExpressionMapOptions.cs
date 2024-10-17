@@ -1,4 +1,6 @@
-﻿namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.Options
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.Options
 {
     /// <summary>
     /// Configuration options for establishing a map to align the incoming filter request
@@ -32,11 +34,14 @@
         /// or an <b>OrLogicalOperator</b>. The logical operator is then used to chain together all
         /// search filter expressions specified.
         /// </summary>
+        [Required(AllowEmptyStrings = false)]
         public string? FilterChainingLogicalOperator { get; set;  }
 
         /// <summary>
         /// The dictionary used to reconcile the incoming request key with the actual search filter expression to apply.
         /// </summary>
+        [Required]
+        [MinLength(1)]
         public IDictionary<string, FilterExpressionOptions> SearchFilterToExpressionMap { get; set; } = new Dictionary<string, FilterExpressionOptions>();
     }
 
@@ -59,7 +64,7 @@
 
         /// <summary>
         /// The delimiter can be applied (optionally) for those expression types that require a
-        /// delimiter to be specified between provisioned values, such as the searcvh.in expression.
+        /// delimiter to be specified between provisioned values, such as the search.in expression.
         /// This allows the underlying Azure AI search mechanism to correctly delimiter values
         /// even if whitespace is present.
         /// </summary>
