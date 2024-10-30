@@ -70,6 +70,9 @@ jobs:
     needs: build_test_pack
     runs-on: ubuntu-latest
 
+    ## Do not attempt to publish the nuget package if this is a dependabot PR
+    if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
