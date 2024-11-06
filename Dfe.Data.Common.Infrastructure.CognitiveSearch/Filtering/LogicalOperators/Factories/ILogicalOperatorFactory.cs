@@ -8,17 +8,6 @@
 public interface ILogicalOperatorFactory
 {
     /// <summary>
-    /// Allows creation of an <see cref="ILogicalOperator"/> instance based on the type requested.
-    /// </summary>
-    /// <param name="logicalOperatorType">
-    /// The concrete implementation type of <see cref="ILogicalOperator"/> requested.
-    /// </param>
-    /// <returns>
-    /// The configured instance of the <see cref="ILogicalOperator"/> type.
-    /// </returns>
-    ILogicalOperator CreateLogicalOperator(Type logicalOperatorType);
-
-    /// <summary>
     /// Allows creation of an <see cref="ILogicalOperator"/> instance based on the type name requested.
     /// </summary>
     /// <param name="logicalOperatorName">
@@ -28,15 +17,4 @@ public interface ILogicalOperatorFactory
     /// The configured instance of the <see cref="ILogicalOperator"/> type.
     /// </returns>
     ILogicalOperator CreateLogicalOperator(string logicalOperatorName);
-
-    /// <summary>
-    /// Allows creation of an <see cref="ILogicalOperator"/> instance based on the generic type specified.
-    /// </summary>
-    /// <typeparam name="TLogicalOperator">
-    /// The concrete type of <see cref="ILogicalOperator"/> requested.
-    /// </typeparam>
-    /// <returns>
-    /// The configured instance of the <see cref="ILogicalOperator"/> type.
-    /// </returns>
-    ILogicalOperator CreateLogicalOperator<TLogicalOperator>() where TLogicalOperator : ILogicalOperator;
 }

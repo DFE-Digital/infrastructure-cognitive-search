@@ -1,6 +1,5 @@
 ﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.LogicalOperators;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.LogicalOperators.Factories;
-using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.FilterExpressions;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.TestDoubles;
 using FluentAssertions;
 using Xunit;
@@ -18,36 +17,6 @@ public sealed class LogicalOperatorFactoryTests
         // act.
         ILogicalOperator logicalOperator =
             logicalOperatorFactory.CreateLogicalOperator("name1");
-
-        // assert.
-        logicalOperator.Should().NotBeNull();
-        logicalOperator.Should().BeOfType<AndLogicalOperator>();
-    }
-
-    [Fact]
-    public void CreateLogicalOperator_WithValidOperatorType_ReturnsExpectedConfiguredOperatorFromfactory()
-    {
-        // arrange.
-        ILogicalOperatorFactory logicalOperatorFactory = new LogicalOperatorFactory(ILogicalOperators.Create());
-
-        // act.
-        ILogicalOperator logicalOperator =
-            logicalOperatorFactory.CreateLogicalOperator(typeof(AndLogicalOperator));
-
-        // assert.
-        logicalOperator.Should().NotBeNull();
-        logicalOperator.Should().BeOfType<AndLogicalOperator>();
-    }
-
-    [Fact]
-    public void CreateLogicalOperator_WithValidOperatorGenricTemplateType_ReturnsExpectedConfiguredOperatorFromfactory()
-    {
-        // arrange.
-        ILogicalOperatorFactory logicalOperatorFactory = new LogicalOperatorFactory(ILogicalOperators.Create());
-
-        // act.
-        ILogicalOperator logicalOperator =
-            logicalOperatorFactory.CreateLogicalOperator<AndLogicalOperator>();
 
         // assert.
         logicalOperator.Should().NotBeNull();

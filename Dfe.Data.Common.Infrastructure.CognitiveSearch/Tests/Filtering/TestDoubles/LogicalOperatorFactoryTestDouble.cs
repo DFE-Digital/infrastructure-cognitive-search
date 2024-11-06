@@ -21,28 +21,6 @@ internal static class LogicalOperatorFactoryTestDouble
                         .Returns((string type) =>
                             GetLogicalOperator(type));
 
-        logicalOperatorFactoryMock
-            .Setup(logicalOperatorFactory =>
-                logicalOperatorFactory
-                    .CreateLogicalOperator(It.IsAny<Type>()))
-                        .Returns((Type type) =>
-                            GetLogicalOperator(type.Name));
-
-        return logicalOperatorFactoryMock.Object;
-    }
-
-    public static ILogicalOperatorFactory MockLogicalOperatorFactoryFor<TFilterType>()
-    {
-        var logicalOperatorFactoryMock = LogicalOperatorFactoryMock();
-
-        logicalOperatorFactoryMock
-            .Setup(logicalOperatorFactory =>
-                logicalOperatorFactory
-                    .CreateLogicalOperator<ILogicalOperator>())
-                        .Returns(() =>
-                            GetLogicalOperator(
-                                typeof(TFilterType).Name));
-
         return logicalOperatorFactoryMock.Object;
     }
 
