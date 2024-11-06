@@ -50,6 +50,7 @@ public sealed class LogicalOperatorFactory : ILogicalOperatorFactory
     /// <returns>
     /// The configured instance of the <see cref="ILogicalOperator"/> type.
     /// </returns>
+    // TODO - can we remove this because I thought it was actually going to try to get an operator by type
     public ILogicalOperator CreateLogicalOperator<TLogicalOperator>()
         where TLogicalOperator : ILogicalOperator => CreateLogicalOperator(typeof(TLogicalOperator));
 
@@ -62,6 +63,7 @@ public sealed class LogicalOperatorFactory : ILogicalOperatorFactory
     /// <returns>
     /// The configured instance of the <see cref="ILogicalOperator"/> type.
     /// </returns>
+    // TODO - can we remove this because I thought it was actually going to try to get an operator by type
     public ILogicalOperator CreateLogicalOperator(Type logicalOperatorType) => CreateLogicalOperator(logicalOperatorName: logicalOperatorType.Name);
 
 
