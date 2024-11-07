@@ -78,7 +78,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
 
             IGeoLocationClientProvider mockGeoLocationClientProvider =
                 GeoLocationClientProviderTestDouble
-                    .CreateWithHttpStatusAndResponse(HttpStatusCode.OK, "{}");
+                    .CreateWithHttpStatusAndResponse(HttpStatusCode.OK, "{ }");
 
             IServiceProvider? serviceProvider =
                 _compositionRootServiceProvider?
