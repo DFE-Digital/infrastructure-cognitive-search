@@ -98,7 +98,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
         }
 
         [Fact]
-        public async Task AddAzureSearchFilterServices_RegistersAllDependencies()
+        public void AddAzureSearchFilterServices_RegistersAllDependencies()
         {
             Dictionary<string, string?> config = new() {
                 { "FilterKeyToFilterExpressionMapOptions:FilterChainingLogicalOperator", "AndLogicalOperator" },
