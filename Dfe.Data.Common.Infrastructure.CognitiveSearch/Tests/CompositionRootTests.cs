@@ -58,7 +58,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
                         searchKeyword: "Test",
                         searchIndex: "Index",
                         searchOptions: new Azure.Search.Documents.SearchOptions()
-                    );
+                    )!;
 
             response.Should().NotBeNull();
         }
