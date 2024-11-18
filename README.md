@@ -1,19 +1,90 @@
 
 # infrastructure-cognitive-search
 
-A library to provide an accessible API for working with Azure cognitive search. The package contains a fully configured default service for searching by keyword, as well as a geo-location service which allows searches to be made by town, or post-code. The package is intended to take the heavy-lifting away in terms of setup and configurartion and allow for an easy, pluggable set of components that can be used across projects. 
+A library to provide an accessible API for working with Azure AI search. The package contains a fully configured default service for searching by keyword, as well as a geo-location service which allows searches to be made by town, or post-code. The package is intended to take the heavy-lifting away in terms of setup and configurartion and allow for an easy, pluggable set of components that can be used across projects. 
 
 ## Getting Started
 
-The dependencies can be used in isolation or registered as a whole under a single composition root. For example, you could opt to use the GeoLocationClientProvider and create your own concrete geo-location service implementation, rather than using the default provided. 
+The dependencies can be used in isolation or registered as using the extension methods provided via the composition root. 
+For example, you could opt to use the GeoLocationClientProvider and create your own concrete geo-location service implementation, rather than using the default provided. 
 
-### Prerequisites
+## Prerequisites
 
-In order to use the default search services it is possible to register all dependencies listed under the default composition root, in one registration, as follows:
+Search service dependencies can be registered using the extension methods provided:
 
 ```csharp
-builder.Services.AddDefaultCognitiveSearchServices(builder.Configuration);
+builder.Services.AddAzureSearchServices(builder.Configuration);
+builder.Services.AddAzureSearchFilterServices(builder.Configuration);
+builder.Services.AddAzureGeoLocationSearchServices(builder.Configuration);
 ```
+
+TODO - explain what each of the registrations provides and check the dependencies 
+on each of the registrations above and the appsettings needed for each of the registrations
+
+## Execute a search
+```csharp
+builder.Services.AddAzureSearchServices(builder.Configuration);
+```
+Registers the basic functionality to send a search request to Azure AI Search.
+This includes the following services:
+
+- An implementation of `ISearchByKeywordService` which is the main class to use to submit a search request to Azure AI search
+- An implementation of `ISearchByKeywordClientProvider` which is used to create an instance of the search client to connect to Azure AI search.
+It requires the following appsettings:
+```json
+{
+  "AzureSearchConnectionOptions": {
+    "EndpointUri": "https://your-search-service-name.search.windows.net/",
+    "Credentials": "your-search-service-api-key"
+  }
+}
+```
+### Basic usage
+```csharp
+ISearchByKeywordService searchService;
+searchService.SearchAsync("search-keyword", "index-name", searchOptions);
+```
+where 
+"search-keyword" is the keyword to search for,
+"index-name" is the name of the index in Azure AI search to search in and
+`searchOptions` is the object of type [SearchOptions](https://learn.microsoft.com/en-us/dotnet/api/azure.search.documents.searchoptions?view=azure-dotnet&devlangs=csharp&f1url=%3FappId%3DDev17IDEF1%26l%3DEN-US%26k%3Dk(Azure.Search.Documents.SearchOptions)%3Bk(DevLang-csharp)%26rd%3Dtrue) that can be used to configure the search request
+
+## Add filtering to search
+```csharp
+builder.Services.AddAzureSearchFilterServices(builder.Configuration);
+```
+Search filter services are an optional add-on to the simple search functionality that allows you to add filters to the search request.
+This includes the following services:
+- Three implementations of ISearchFilterExpression - "SearchInFilterExpression", "LessThanOrEqualToExpression", SearchGeoLocationFilterExpression"
+- Two implementations of ILogicalOperator - "AndLogicalOperator", "OrLogicalOperator" that determine how the filters are combined if more than one filter field is used
+These interface can be extended with your own custom implementations to add more filter expressions and logical operators as needed.
+
+The filter services to be used are set for each individual target filter field (as named in your Azure AI search index) in appsettings.
+For example, the following appsettings show two filter fields configured to use the "SearchInFilterExpression". The "FilterExpressionValuesDelimiter" TODO explain :
+```json
+{
+  "FilterKeyToFilterExpressionMapOptions": {
+    "FilterChainingLogicalOperator": "AndLogicalOperator",
+    "SearchFilterToExpressionMap": {
+      "<Your filter field here>": {
+        "FilterExpressionKey": "SearchInFilterExpression",
+        "FilterExpressionValuesDelimiter": "¬"
+      },
+      "<another filter field here>": {
+        "FilterExpressionKey": "SearchInFilterExpression",
+        "FilterExpressionValuesDelimiter": "¬"
+      }
+    }
+  }
+}
+```
+## GeoLocation search
+```csharp
+AddAzureGeoLocationSearchServices
+```
+TODO - follow format for 'Execute a search'
+
+
 
 Alternatively, the registrations can be configured in the consuming application's IOC container, with a typical registration configured similar to the following:
 
@@ -136,12 +207,6 @@ You can use the Nuget Registry from a GitHub action pipeline without need for a 
 - name: Add nuget package source
   run: dotnet nuget add source --username USERNAME --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/DFE-Digital/index.json"
 ```
-## Authors
-
-* **Spencer O'Hegarty**
-* **Catherine Lawlor**
-* **Asia Witek**
-* **Roger Howell**
 
 ## License
 
