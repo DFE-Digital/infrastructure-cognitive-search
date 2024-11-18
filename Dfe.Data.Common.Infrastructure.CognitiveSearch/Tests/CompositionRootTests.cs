@@ -53,7 +53,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
 
             // act
             var response =
-                await searchByKeywordService
+                await searchByKeywordService!
                     .SearchAsync<ExpandoObject>(
                         searchKeyword: "Test",
                         searchIndex: "Index",
