@@ -53,12 +53,12 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
 
             // act
             var response =
-                await searchByKeywordService
+                await searchByKeywordService!
                     .SearchAsync<ExpandoObject>(
                         searchKeyword: "Test",
                         searchIndex: "Index",
                         searchOptions: new Azure.Search.Documents.SearchOptions()
-                    );
+                    )!;
 
             response.Should().NotBeNull();
         }
@@ -78,7 +78,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
 
             IGeoLocationClientProvider mockGeoLocationClientProvider =
                 GeoLocationClientProviderTestDouble
-                    .CreateWithHttpStatusAndResponse(HttpStatusCode.OK, "{}");
+                    .CreateWithHttpStatusAndResponse(HttpStatusCode.OK, "{ }");
 
             IServiceProvider? serviceProvider =
                 _compositionRootServiceProvider?
@@ -98,7 +98,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
         }
 
         [Fact]
-        public async Task AddAzureSearchFilterServices_RegistersAllDependencies()
+        public void AddAzureSearchFilterServices_RegistersAllDependencies()
         {
             Dictionary<string, string?> config = new() {
                 { "FilterKeyToFilterExpressionMapOptions:FilterChainingLogicalOperator", "AndLogicalOperator" },

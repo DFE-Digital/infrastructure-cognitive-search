@@ -147,7 +147,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
         }
 
         [Fact]
-        public async Task AddAzureSearchFilterServices_MissingFilterKeyToFilterExpressionMapOptions_FilterChainingLogicalOperator_ThrowOptionsValidationException()
+        public void AddAzureSearchFilterServices_MissingFilterKeyToFilterExpressionMapOptions_FilterChainingLogicalOperator_ThrowOptionsValidationException()
         {
             Dictionary<string, string?> config = new() {
                 { "FilterKeyToFilterExpressionMapOptions:SearchFilterToExpressionMap:test-key:FilterExpressionKey", "SearchInFilterExpression" },
@@ -173,7 +173,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests
         }
 
         [Fact]
-        public async Task AddAzureSearchFilterServices_MissingFilterKeyToFilterExpressionMapOptions_SearchFilterToExpressionMap_ThrowOptionsValidationException()
+        public void AddAzureSearchFilterServices_MissingFilterKeyToFilterExpressionMapOptions_SearchFilterToExpressionMap_ThrowOptionsValidationException()
         {
             Dictionary<string, string?> config = new() {
                { "FilterKeyToFilterExpressionMapOptions:FilterChainingLogicalOperator", "AndLogicalOperator" }

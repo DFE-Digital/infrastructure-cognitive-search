@@ -42,30 +42,6 @@ public sealed class LogicalOperatorFactory : ILogicalOperatorFactory
     }
 
     /// <summary>
-    /// Allows creation of an <see cref="ILogicalOperator"/> instance based on the generic type specified.
-    /// </summary>
-    /// <typeparam name="TLogicalOperator">
-    /// The concrete type of <see cref="ILogicalOperator"/> requested.
-    /// </typeparam>
-    /// <returns>
-    /// The configured instance of the <see cref="ILogicalOperator"/> type.
-    /// </returns>
-    public ILogicalOperator CreateLogicalOperator<TLogicalOperator>()
-        where TLogicalOperator : ILogicalOperator => CreateLogicalOperator(typeof(TLogicalOperator));
-
-    /// <summary>
-    /// Allows creation of an <see cref="ILogicalOperator"/> instance based on the type requested.
-    /// </summary>
-    /// <param name="logicalOperatorType">
-    /// The concrete implementation type of <see cref="ILogicalOperator"/> requested.
-    /// </param>
-    /// <returns>
-    /// The configured instance of the <see cref="ILogicalOperator"/> type.
-    /// </returns>
-    public ILogicalOperator CreateLogicalOperator(Type logicalOperatorType) => CreateLogicalOperator(logicalOperatorName: logicalOperatorType.Name);
-
-
-    /// <summary>
     /// Allows creation of an <see cref="ILogicalOperator"/> instance based on the type name requested.
     /// </summary>
     /// <param name="logicalOperatorName">

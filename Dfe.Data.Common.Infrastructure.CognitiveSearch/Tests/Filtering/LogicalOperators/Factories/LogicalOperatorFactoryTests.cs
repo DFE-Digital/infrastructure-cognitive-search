@@ -1,6 +1,6 @@
 ﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.LogicalOperators;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Filtering.LogicalOperators.Factories;
-using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.FilterExpressions;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Filtering.TestDoubles;
 using FluentAssertions;
 using Xunit;
 
@@ -12,12 +12,11 @@ public sealed class LogicalOperatorFactoryTests
     public void CreateLogicalOperator_WithValidOperatorName_ReturnsExpectedConfiguredOperatorFromfactory()
     {
         // arrange.
-        ILogicalOperatorFactory logicalOperatorFactory =
-            LogicalOperatorFactoryTestDouble.MockLogicalOperatorFactory();
+        ILogicalOperatorFactory logicalOperatorFactory = new LogicalOperatorFactory(ILogicalOperators.Create());
 
         // act.
         ILogicalOperator logicalOperator =
-            logicalOperatorFactory.CreateLogicalOperator("AndLogicalOperator");
+            logicalOperatorFactory.CreateLogicalOperator("name1");
 
         // assert.
         logicalOperator.Should().NotBeNull();
@@ -25,43 +24,25 @@ public sealed class LogicalOperatorFactoryTests
     }
 
     [Fact]
-    public void CreateLogicalOperator_WithValidOperatorType_ReturnsExpectedConfiguredOperatorFromfactory()
+    public void CreateFilter_WithUnknownFilterName_ThrowsExpectedException()
     {
         // arrange.
-        ILogicalOperatorFactory logicalOperatorFactory =
-            LogicalOperatorFactoryTestDouble.MockLogicalOperatorFactory();
+        ILogicalOperatorFactory logicalOperatorFactory = new LogicalOperatorFactory(ILogicalOperators.Create());
 
         // act.
-        ILogicalOperator logicalOperator =
-            logicalOperatorFactory.CreateLogicalOperator(typeof(AndLogicalOperator));
+        Action failedCreateOperatorAction = () =>
+            logicalOperatorFactory.CreateLogicalOperator(logicalOperatorName: "something else");
 
-        // assert.
-        logicalOperator.Should().NotBeNull();
-        logicalOperator.Should().BeOfType<AndLogicalOperator>();
-    }
-
-    [Fact]
-    public void CreateLogicalOperator_WithValidOperatorGenricTemplateType_ReturnsExpectedConfiguredOperatorFromfactory()
-    {
-        // arrange.
-        ILogicalOperatorFactory logicalOperatorFactory =
-            LogicalOperatorFactoryTestDouble.MockLogicalOperatorFactoryFor<AndLogicalOperator>();
-
-        // act.
-        ILogicalOperator logicalOperator =
-            logicalOperatorFactory.CreateLogicalOperator<AndLogicalOperator>();
-
-        // assert.
-        logicalOperator.Should().NotBeNull();
-        logicalOperator.Should().BeOfType<AndLogicalOperator>();
+        //assert
+        ArgumentException exception =
+            Assert.Throws<ArgumentOutOfRangeException>(failedCreateOperatorAction);
     }
 
     [Fact]
     public void CreateFilter_WithNullFilterName_ThrowsExpectedException()
     {
         // arrange.
-        ILogicalOperatorFactory logicalOperatorFactory =
-           LogicalOperatorFactoryTestDouble.MockLogicalOperatorFactory();
+        ILogicalOperatorFactory logicalOperatorFactory = new LogicalOperatorFactory(ILogicalOperators.Create());
 
         // act.
         Action failedCreateOperatorAction = () =>
@@ -78,9 +59,7 @@ public sealed class LogicalOperatorFactoryTests
     public void CreateFilter_WithEmptyFilterName_ThrowsExpectedException()
     {
         // arrange.
-        ILogicalOperatorFactory logicalOperatorFactory =
-            LogicalOperatorFactoryTestDouble.MockLogicalOperatorFactory();
-
+        ILogicalOperatorFactory logicalOperatorFactory = new LogicalOperatorFactory(ILogicalOperators.Create());
         // act.
         Action failedCreateOperatorAction = () =>
             logicalOperatorFactory.CreateLogicalOperator(logicalOperatorName: "");
@@ -96,8 +75,7 @@ public sealed class LogicalOperatorFactoryTests
     public void CreateFilter_WithWhitespaceFilterName_ThrowsExpectedException()
     {
         // arrange.
-        ILogicalOperatorFactory logicalOperatorFactory =
-            LogicalOperatorFactoryTestDouble.MockLogicalOperatorFactory();
+        ILogicalOperatorFactory logicalOperatorFactory = new LogicalOperatorFactory(ILogicalOperators.Create());
 
         // act.
         Action failedCreateOperatorAction = () =>
