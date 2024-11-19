@@ -1,7 +1,10 @@
 
 # infrastructure-cognitive-search
 
-A library to provide an accessible API for working with Azure AI search. The package contains a fully configured default service for searching by keyword, as well as a geo-location service which allows searches to be made by town, or post-code. The package is intended to take the heavy-lifting away in terms of setup and configurartion and allow for an easy, pluggable set of components that can be used across projects. 
+A library to provide an accessible API for working with Azure AI search and Azure maps search. 
+The package contains a fully configured default service for searching by keyword, as well as a Azure maps search service which allows searches to 
+be made by town, or post-code. The package is intended to take the heavy-lifting away in terms of setup and configuration and allow for an easy, 
+pluggable set of components that can be used across projects. 
 
 ## Getting Started
 
@@ -15,7 +18,8 @@ builder.Services.AddAzureSearchServices(builder.Configuration);
 builder.Services.AddAzureSearchFilterServices(builder.Configuration);
 builder.Services.AddAzureGeoLocationSearchServices(builder.Configuration);
 ```
-## Execute a search
+
+## Execute a search against Azure AI search
 ```csharp
 builder.Services.AddAzureSearchServices(builder.Configuration);
 ```
@@ -41,11 +45,15 @@ public async Task<Response<SearchResults<TSearchResult>>> UseSearchService(ISear
 }
 ```
 where 
-"search-keyword" is the keyword to search for,
-"index-name" is the name of the index in Azure AI search to search in and
-`searchOptions` is the object of type [SearchOptions](https://learn.microsoft.com/en-us/dotnet/api/azure.search.documents.searchoptions?view=azure-dotnet&devlangs=csharp&f1url=%3FappId%3DDev17IDEF1%26l%3DEN-US%26k%3Dk(Azure.Search.Documents.SearchOptions)%3Bk(DevLang-csharp)%26rd%3Dtrue) that can be used to configure the search request
+```search-keyword``` is the keyword to search for,
+```index-name``` is the name of the index in Azure AI search to search in and
+`searchOptions` is the object of type [SearchOptions](https://learn.microsoft.com/en-us/dotnet/api/azure.search.documents.searchoptions?view=azure-dotnet&devlangs=csharp&f1url=%3FappId%3DDev17IDEF1%26l%3DEN-US%26k%3Dk(Azure.Search.Documents.SearchOptions)%3Bk(DevLang-csharp)%26rd%3Dtrue) 
+that specifies the search request to be submitted.
 
 ## Add filtering to search
+
+Filtering a search can be accomplished using only the simple search service explained above and by formatting the ```Filter``` property of the ```SearchOptions``` object.
+However, the SearchFilterServices provides additional services to facilitate the construction of the filter expression used by the Azure AI search API.
 ```csharp
 builder.Services.AddAzureSearchFilterServices(builder.Configuration);
 ```
@@ -56,10 +64,8 @@ This includes the following services:
 - Two implementations of ```ILogicalOperator``` - ```AndLogicalOperator```, ```OrLogicalOperator``` that determine how the filters are combined if more than one filter field is used
 These interfaces can be extended with your own custom implementations to add more filter expressions and logical operators as needed.
 
-Search filter services are an optional add-on to the simple search functionality that facilitate the constuction of the
-filter expressions used by the Azure AI search API. To use the filter services, you must configure the filter fields and their settings in appsettings.
-
-For example, the following appsettings show a filter field ```PHASEOFEDUCATION``` specified to use the odata ```Search.in``` expression when filter values are applied to this field.
+To use the filter services, you must configure the filter fields and their settings in appsettings. For example, the following appsettings 
+show a filter field ```PHASEOFEDUCATION``` specified to use the odata ```Search.in``` expression when filter values are applied to this field.
 ```json
 {
   "FilterKeyToFilterExpressionMapOptions": {
@@ -84,8 +90,8 @@ The result is the odata filter expression
 ```"search.in(PHASEOFEDUCATION, 'Primary,Secondary', ',')"```
 which can be assigned directly to the Azure SearchOptions.Filter property
 
-When more than one filter field is to be used, the filter expression can be chained using any of the 
-implementations of ```ILogicalOperator``` by adding the property to appsettings:
+When more than one filter field is to be used, the filter expression can include chained filters using any of the 
+implementations of ```ILogicalOperator``` by adding the ```FilterChainingLogicalOperator``` property to appsettings:
 ```json
 {
   "FilterKeyToFilterExpressionMapOptions": {
