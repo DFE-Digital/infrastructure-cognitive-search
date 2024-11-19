@@ -50,6 +50,13 @@ public static class CompositionRoot
         services.TryAddSingleton<ISearchByKeywordClientProvider, SearchByKeywordClientProvider>();
         services.TryAddSingleton<ISearchIndexNamesProvider, SearchIndexNamesProvider>();
         services.TryAddSingleton<ISearchByKeywordService, DefaultSearchByKeywordService>();
+        services.TryAddSingleton<ISearchRule, PartialWordMatchRule>();
+
+        // Register the IOptions object for ISearchRule
+        services.Configure<SearchRuleOptions>(configuration.GetSection("SearchRuleOptions"));
+        // Explicitly register the settings object by delegating to the IOptions object
+        services.AddSingleton(resolver =>
+            resolver.GetRequiredService<IOptions<SearchRuleOptions>>().Value);
 
         services.AddOptions<AzureSearchConnectionOptions>()
            .Configure<IConfiguration>(
@@ -94,14 +101,6 @@ public static class CompositionRoot
                        .Bind(settings))
                        .ValidateDataAnnotations()
                        .ValidateOnStart();
-
-        // Register the IOptions object
-        services.Configure<SearchRuleOptions>(configuration.GetSection("SearchRuleOptions"));
-        // Explicitly register the settings object by delegating to the IOptions object
-        services.AddSingleton(resolver =>
-            resolver.GetRequiredService<IOptions<SearchRuleOptions>>().Value);
-
-        services.AddSingleton<ISearchRule, PartialWordMatchRule>();
 
         services.AddHttpClient("GeoLocationHttpClient", config =>
         {
