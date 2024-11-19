@@ -17,10 +17,6 @@ builder.Services.AddAzureSearchServices(builder.Configuration);
 builder.Services.AddAzureSearchFilterServices(builder.Configuration);
 builder.Services.AddAzureGeoLocationSearchServices(builder.Configuration);
 ```
-
-TODO - explain what each of the registrations provides and check the dependencies 
-on each of the registrations above and the appsettings needed for each of the registrations
-
 ## Execute a search
 ```csharp
 builder.Services.AddAzureSearchServices(builder.Configuration);
@@ -41,8 +37,10 @@ It requires the following appsettings:
 ```
 ### Basic usage
 ```csharp
-ISearchByKeywordService searchService;
-searchService.SearchAsync("search-keyword", "index-name", searchOptions);
+public async Task<Response<SearchResults<TSearchResult>>> UseSearchService(ISearchByKeywordService searchService, string searchKeyword, string indexName, SearchOptions searchOptions)
+{
+    return await searchService.SearchAsync(searchKeyword, indexName, searchOptions);
+}
 ```
 where 
 "search-keyword" is the keyword to search for,
@@ -53,31 +51,54 @@ where
 ```csharp
 builder.Services.AddAzureSearchFilterServices(builder.Configuration);
 ```
-Search filter services are an optional add-on to the simple search functionality that allows you to add filters to the search request.
-This includes the following services:
-- Three implementations of ISearchFilterExpression - "SearchInFilterExpression", "LessThanOrEqualToExpression", SearchGeoLocationFilterExpression"
-- Two implementations of ILogicalOperator - "AndLogicalOperator", "OrLogicalOperator" that determine how the filters are combined if more than one filter field is used
-These interface can be extended with your own custom implementations to add more filter expressions and logical operators as needed.
 
-The filter services to be used are set for each individual target filter field (as named in your Azure AI search index) in appsettings.
-For example, the following appsettings show two filter fields configured to use the "SearchInFilterExpression". The "FilterExpressionValuesDelimiter" TODO explain :
+This includes the following services:
+- An implementation of ```ISearchFilterExpressionsBuilder``` which co-ordinates the build of the filter expression given the config (explained below)
+- Three implementations of ```ISearchFilterExpression``` - ```SearchInFilterExpression```, ```LessThanOrEqualToExpression```, ```SearchGeoLocationFilterExpression```
+- Two implementations of ```ILogicalOperator``` - ```AndLogicalOperator```, ```OrLogicalOperator``` that determine how the filters are combined if more than one filter field is used
+These interfaces can be extended with your own custom implementations to add more filter expressions and logical operators as needed.
+
+Search filter services are an optional add-on to the simple search functionality that facilitate the constuction of the
+filter expressions used by the Azure AI search API. To use the filter services, you must configure the filter fields and their settings in appsettings.
+
+For example, the following appsettings show a filter field ```PHASEOFEDUCATION``` specified to use the odata ```Search.in``` expression when filter values are applied to this field.
 ```json
 {
   "FilterKeyToFilterExpressionMapOptions": {
-    "FilterChainingLogicalOperator": "AndLogicalOperator",
     "SearchFilterToExpressionMap": {
-      "<Your filter field here>": {
+      "PHASEOFEDUCATION": {
         "FilterExpressionKey": "SearchInFilterExpression",
-        "FilterExpressionValuesDelimiter": "¬"
-      },
-      "<another filter field here>": {
-        "FilterExpressionKey": "SearchInFilterExpression",
-        "FilterExpressionValuesDelimiter": "¬"
+        "FilterExpressionValuesDelimiter": ","
       }
     }
   }
 }
 ```
+When a call is made to the ```BuildSearchFilterExpressions``` method of the ISearchFilterExpressionsBuilder, the filter expression is built using the filter expression key and the filter values. 
+The filter values are split by the ```FilterExpressionValuesDelimiter``` specified in the appsettings. For example, the following code snippet shows how the filter expression is built using the filter values "Primary", "Secondary":
+```csharp
+_searchOptions.Filter =
+    _searchFilterExpressionsBuilder.BuildSearchFilterExpressions(
+        new SearchFilterRequest("PHASEOFEDUCATION", new List<string>(){"Primary", "Secondary"}));
+```
+
+The result is the odata filter expression 
+```"search.in(PHASEOFEDUCATION, 'Primary,Secondary', ',')"```
+which can be assigned directly to the Azure SearchOptions.Filter property
+
+When more than one filter field is to be used, the filter expression can be chained using any of the 
+implementations of ```ILogicalOperator``` by adding the property to appsettings:
+```json
+{
+  "FilterKeyToFilterExpressionMapOptions": {
+    "SearchFilterToExpressionMap": {
+      "FilterChainingLogicalOperator": "AndLogicalOperator"
+      }
+   }
+}
+```
+
+
 ## GeoLocation search
 ```csharp
 AddAzureGeoLocationSearchServices
