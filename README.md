@@ -8,8 +8,6 @@ A library to provide an accessible API for working with Azure AI search. The pac
 The dependencies can be used in isolation or registered as using the extension methods provided via the composition root. 
 For example, you could opt to use the GeoLocationClientProvider and create your own concrete geo-location service implementation, rather than using the default provided. 
 
-## Prerequisites
-
 Search service dependencies can be registered using the extension methods provided:
 
 ```csharp
@@ -31,7 +29,7 @@ It requires the following appsettings:
 {
   "AzureSearchConnectionOptions": {
     "EndpointUri": "https://your-search-service-name.search.windows.net/",
-    "Credentials": "your-search-service-api-key"
+    "Credentials": "your-search-service-api-key - served from Azure key vault or other"
   }
 }
 ```
@@ -98,16 +96,37 @@ implementations of ```ILogicalOperator``` by adding the property to appsettings:
 }
 ```
 
-
-## GeoLocation search
+## Azure maps search
 ```csharp
-AddAzureGeoLocationSearchServices
+builder.Services.AddAzureGeoLocationSearchServices(builder.Configuration);
 ```
-TODO - follow format for 'Execute a search'
+Registers the basic functionality to send a location search request to the [Azure maps search address API](https://learn.microsoft.com/en-us/rest/api/maps/search/get-search-address?view=rest-maps-1.0&tabs=HTTP).
+It registers the following services:
 
+- An implementation of `IGeoLocationService` which is the main class to use to submit a search request to the Azure maps search API
+- An implementation of `IGeoLocationClientProvider` which is used to create an instance of the search client to connect to Azure maps search.
 
+It requires the following appsettings:
+```json
+{
+  "AzureGeoLocationOptions": {
+    "MapsServiceUri": "https://atlas.microsoft.com/",
+    "SearchEndpointUri": "<your endpoint url in the format specified below",
+    "MapsSubscriptionKey": "<your maps subscription key - served from Azure Key Vault or other>"
+  }
+}
+```
+```SearchEndpointUri``` should be in the format 
+```search/address/json?api-version=1.0&countrySet=GB&typeahead=true&limit=10&query={0}&subscription-key={1}"```
 
-Alternatively, the registrations can be configured in the consuming application's IOC container, with a typical registration configured similar to the following:
+### Basic usage
+```csharp
+ GeoLocationServiceResponse? response =
+                await geoLocationService?.SearchGeoLocationAsync("<location string>")!;
+```
+
+## Custom registration
+Instead of using the extension methods to register the required services, the registrations can be configured manually in the consuming application's IOC container, with a typical registration configured similar to the following:
 
 ```csharp
 services.TryAddSingleton<ISearchByKeywordClientProvider, SearchByKeywordClientProvider>();
@@ -150,54 +169,10 @@ services.AddHttpClient("GeoLocationHttpClient", config =>
 });
 ```
 
-### Code Usage/Examples
-
-Typical dependency injection and search request would look something like the following,
-
-```csharp
-public sealed class CognitiveSearchServiceAdapter<TSearchResult> : ISearchServiceAdapter where TSearchResult : class
-{
-    private readonly ISearchService _cognitiveSearchService;
-    private readonly ISearchOptionsFactory _searchOptionsFactory;
-    private readonly IMapper<Response<SearchResults<TSearchResult>>, EstablishmentResults> _searchResponseMapper;
-
-    public CognitiveSearchServiceAdapter(
-        ISearchService cognitiveSearchService,
-        ISearchOptionsFactory searchOptionsFactory,
-        IMapper<Response<SearchResults<TSearchResult>>, EstablishmentResults> searchResponseMapper)
-    {
-        _searchOptionsFactory = searchOptionsFactory;
-        _cognitiveSearchService = cognitiveSearchService;
-        _searchResponseMapper = searchResponseMapper;
-    }
-
-    public async Task<EstablishmentResults> SearchAsync(SearchContext searchContext)
-    {
-        SearchOptions searchOptions =
-            _searchOptionsFactory.GetSearchOptions(searchContext.TargetCollection) ??
-            throw new ApplicationException(
-                $"Search options cannot be derived for {searchContext.TargetCollection}.");
-
-        Response<SearchResults<TSearchResult>> searchResults =
-            await _cognitiveSearchService.SearchAsync<TSearchResult>(
-                searchContext.SearchKeyword,
-                searchContext.TargetCollection,
-                searchOptions
-            )
-            .ConfigureAwait(false) ??
-                throw new ApplicationException(
-                    $"Unable to derive search results based on input {searchContext.SearchKeyword}.");
-
-        return _searchResponseMapper.MapFrom(searchResults);
-    }
-}
-```
-
 ## Built With
 
 * [.Net 8](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8/overview) - Core framework used
 * [Azure](https://learn.microsoft.com/en-us/azure/search/) - Cloud services provider (cognitive search)
-
 
 ## Versioning
 
