@@ -1,9 +1,7 @@
 ﻿using Azure;
 using Azure.Search.Documents;
 using Azure.Search.Documents.Models;
-using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Options;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
-using Microsoft.Extensions.Options;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
 
