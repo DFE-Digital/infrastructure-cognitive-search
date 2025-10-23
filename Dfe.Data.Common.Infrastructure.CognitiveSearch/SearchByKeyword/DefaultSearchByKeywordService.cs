@@ -12,26 +12,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
 public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
 {
     private readonly ISearchByKeywordClientProvider _searchClientProvider;
-    private readonly ISearchRule? _searchRule;
-
-    /// <summary>
-    /// The following T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers.ISearchByKeywordClientProvider
-    /// dependency Provides a contract by which to derive (by index name) a configured T:Azure.Search.Documents.SearchClient
-    /// for use when making search by key-word requests.
-    /// </summary>
-    /// <param name="searchClientProvider">
-    /// The T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers.ISearchByKeywordClientProvider instance
-    /// used to provision a configured Azure search client provider.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// The exception thrown when an attempt is made to inject a null search client provider.
-    /// </exception>
-    public DefaultSearchByKeywordService(
-        ISearchByKeywordClientProvider searchClientProvider)
-    {
-        _searchClientProvider = searchClientProvider ??
-            throw new ArgumentNullException(nameof(searchClientProvider));
-    }
+    private readonly List<ISearchRule> _searchRules;
 
     /// <summary>
     /// The following T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers.ISearchByKeywordClientProvider
@@ -43,16 +24,19 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
     /// used to provision a configured Azure search client provider.
     /// </param>
     /// <param name="searchRule">
-    /// The implementation of <see cref="ISearchRule"/>
+    /// The collection of implementations of <see cref="ISearchRule"/>
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// The exception thrown when an attempt is made to inject a null search client provider.
     /// </exception>
     public DefaultSearchByKeywordService(
         ISearchByKeywordClientProvider searchClientProvider,
-        ISearchRule searchRule) : this(searchClientProvider)
+        IEnumerable<ISearchRule>? searchRule = null)
     {
-        _searchRule = searchRule;
+        _searchClientProvider = searchClientProvider ??
+            throw new ArgumentNullException(nameof(searchClientProvider));
+
+        _searchRules = searchRule?.ToList() ?? [];
     }
 
 
@@ -95,7 +79,9 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
         ArgumentException.ThrowIfNullOrEmpty(searchIndex);
         ArgumentNullException.ThrowIfNull(searchOptions);
 
-        searchKeyword = _searchRule?.ApplySearchRules(searchKeyword) ?? searchKeyword;
+        searchKeyword = 
+            _searchRules
+                .Aggregate(searchKeyword, (current, rule) => rule?.ApplySearchRules(current) ?? current);
 
         return InvokeSearch(
             searchIndex, (searchClient) =>

@@ -57,7 +57,7 @@ public class DefaultSearchByKeywordServiceTests
         _azureSearchClientMock.Setup(client => client.SearchAsync<TestDocument>(It.IsAny<string>(), searchOptions, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
 
-        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, mockSearchRule);
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, [mockSearchRule]);
 
         // act
         var result = (await searchService.SearchAsync<TestDocument>(searchKeyword, searchIndex, searchOptions)).Value.GetResults();
@@ -65,6 +65,43 @@ public class DefaultSearchByKeywordServiceTests
         // assert
         Mock.Get(mockSearchRule).Verify(searchRuleProvider => searchRuleProvider.ApplySearchRules(searchKeyword), Times.Once);
         _azureSearchClientMock.Verify(search => search.SearchAsync<TestDocument>(searchKeywordOut, It.IsAny<SearchOptions>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task SearchAsync_MultipleRules_ReturnsExpected()
+    {
+        // arrange
+        const string searchIndex = "index1";
+        const string searchKeyword = "name";
+        const string searchKeywordPostRulesTransformation = "name3"; 
+        const string documentContentValue = "example name";
+
+        List<ISearchRule> mockSearchRules = [
+            PartialWordMatchRuleTestDouble.MockFor(searchKeyword, "name1"),
+            PartialWordMatchRuleTestDouble.MockFor("name1", "name2"),
+            PartialWordMatchRuleTestDouble.MockFor("name2", searchKeywordPostRulesTransformation),
+        ];
+
+        SearchOptions searchOptions = AzureSearchOptionsTestDouble.SearchOptionsWithSearchField(It.IsAny<string>());
+        var searchResults = SearchResultsTestDouble<TestDocument>.SearchResultsWith(new TestDocument() { Name = documentContentValue });
+        
+        _searchClientProviderMock.Setup(provider => provider.InvokeSearchClientAsync(It.IsAny<string>()))
+            .ReturnsAsync(_azureSearchClientMock.Object);
+        
+        _azureSearchClientMock.Setup(client => client.SearchAsync<TestDocument>(It.IsAny<string>(), searchOptions, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
+
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, mockSearchRules);
+
+        // act
+        var result = (await searchService.SearchAsync<TestDocument>(searchKeyword, searchIndex, searchOptions)).Value.GetResults();
+
+        // assert
+        Mock.Get(mockSearchRules[0]).Verify((searchRuleProvider) => searchRuleProvider.ApplySearchRules(searchKeyword), Times.Once);
+        Mock.Get(mockSearchRules[1]).Verify((searchRuleProvider) => searchRuleProvider.ApplySearchRules("name1"), Times.Once);
+        Mock.Get(mockSearchRules[2]).Verify((searchRuleProvider) => searchRuleProvider.ApplySearchRules("name2"), Times.Once);
+        
+        _azureSearchClientMock.Verify(search => search.SearchAsync<TestDocument>(searchKeywordPostRulesTransformation, It.IsAny<SearchOptions>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -77,11 +114,14 @@ public class DefaultSearchByKeywordServiceTests
 
         SearchOptions searchOptions = AzureSearchOptionsTestDouble.SearchOptionsWithSearchField(searchKeyword);
         var searchResults = SearchResultsTestDouble<TestDocument>.SearchResultsWith(new TestDocument() { Name = documentContentValue });
+        
         _azureSearchClientMock
             .Setup(client => client.SearchAsync<TestDocument>(searchKeyword, searchOptions, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
+        
         _searchClientProviderMock.Setup(provider => provider.InvokeSearchClientAsync(It.IsAny<string>()))
             .ReturnsAsync(_azureSearchClientMock.Object);
+
         var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object);
 
         // act
