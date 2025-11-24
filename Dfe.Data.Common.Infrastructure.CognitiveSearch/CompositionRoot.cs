@@ -59,13 +59,9 @@ public static class CompositionRoot
             resolver.GetRequiredService<IOptions<SearchRuleOptions>>().Value);
 
         services.AddOptions<AzureSearchConnectionOptions>()
-           .Configure<IConfiguration>(
-               (settings, configuration) =>
-                   configuration
-                       .GetSection(nameof(AzureSearchConnectionOptions))
-                       .Bind(settings))
-                       .ValidateDataAnnotations()
-                       .ValidateOnStart();
+            .Bind(configuration.GetSection(nameof(AzureSearchConnectionOptions)))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
     }
 
     /// <summary>
@@ -94,13 +90,9 @@ public static class CompositionRoot
         services.TryAddScoped<IGeoLocationService, DefaultGeoLocationService>();
 
         services.AddOptions<GeoLocationOptions>()
-           .Configure<IConfiguration>(
-               (settings, configuration) =>
-                   configuration
-                       .GetSection(nameof(GeoLocationOptions))
-                       .Bind(settings))
-                       .ValidateDataAnnotations()
-                       .ValidateOnStart();
+            .Bind(configuration.GetSection(nameof(GeoLocationOptions)))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
         services.AddHttpClient("GeoLocationHttpClient", config =>
         {
@@ -190,12 +182,8 @@ public static class CompositionRoot
         });
 
         services.AddOptions<FilterKeyToFilterExpressionMapOptions>()
-            .Configure<IConfiguration>(
-                (settings, configuration) =>
-                    configuration
-                        .GetSection("FilterKeyToFilterExpressionMapOptions")
-                        .Bind(settings))
-                        .ValidateDataAnnotations()
-                        .ValidateOnStart();
+            .Bind(configuration.GetSection(nameof(FilterKeyToFilterExpressionMapOptions)))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
     }
 }
