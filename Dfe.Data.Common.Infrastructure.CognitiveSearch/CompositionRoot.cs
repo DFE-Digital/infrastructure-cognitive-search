@@ -15,7 +15,6 @@ using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.SearchRules
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch;
 
@@ -51,12 +50,6 @@ public static class CompositionRoot
         services.TryAddSingleton<ISearchIndexNamesProvider, SearchIndexNamesProvider>();
         services.TryAddSingleton<ISearchByKeywordService, DefaultSearchByKeywordService>();
         services.TryAddSingleton<ISearchRule, PartialWordMatchRule>();
-
-        // Register the IOptions object for ISearchRule
-        services.Configure<SearchRuleOptions>(configuration.GetSection("SearchRuleOptions"));
-        // Explicitly register the settings object by delegating to the IOptions object
-        services.AddSingleton(resolver =>
-            resolver.GetRequiredService<IOptions<SearchRuleOptions>>().Value);
 
         services.AddOptions<AzureSearchConnectionOptions>()
             .Bind(configuration.GetSection(nameof(AzureSearchConnectionOptions)))
