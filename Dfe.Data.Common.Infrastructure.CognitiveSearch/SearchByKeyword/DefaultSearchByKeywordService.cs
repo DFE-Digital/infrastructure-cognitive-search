@@ -84,9 +84,9 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
                 .Aggregate(searchKeyword, (current, rule) => rule?.ApplySearchRules(current) ?? current);
 
         return InvokeSearch(
-            searchIndex, (searchClient) =>
-                searchClient.SearchAsync<TSearchResult>(
-                    searchKeyword, searchOptions).Result);
+            searchIndex, async (searchClient) =>
+                await searchClient.SearchAsync<TSearchResult>(
+                    searchKeyword, searchOptions));
     }
 
     /// <summary>
@@ -106,16 +106,13 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
     /// <returns>
     /// The type of search result into which to unpack the raw search response.
     /// </returns>
-    private Task<TResult> InvokeSearch<TResult>(
-        string searchIndex, Func<SearchClient, TResult> searchAction) where TResult : class
+    private async Task<TResult> InvokeSearch<TResult>(
+        string searchIndex, Func<SearchClient, Task<TResult>> searchAction) where TResult : class
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(searchIndex);
 
-        return _searchClientProvider
-            .InvokeSearchClientAsync(searchIndex)
-            .ContinueWith(
-                searchClient =>
-                    searchAction(searchClient.Result),
-                TaskContinuationOptions.OnlyOnRanToCompletion);
+        SearchClient client = await _searchClientProvider.InvokeSearchClientAsync(searchIndex);
+
+        return await searchAction(client);
     }
 }
