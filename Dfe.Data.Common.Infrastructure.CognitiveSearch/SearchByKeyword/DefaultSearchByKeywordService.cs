@@ -12,7 +12,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
 public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
 {
     private readonly ISearchByKeywordClientProvider _searchClientProvider;
-    private readonly List<ISearchRule> _searchRules;
+    private readonly List<ISearchKeywordTransformer> _transformers;
 
     /// <summary>
     /// The following T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers.ISearchByKeywordClientProvider
@@ -23,20 +23,20 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
     /// The T:Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers.ISearchByKeywordClientProvider instance
     /// used to provision a configured Azure search client provider.
     /// </param>
-    /// <param name="searchRule">
-    /// The collection of implementations of <see cref="ISearchRule"/>
+    /// <param name="transformers">
+    /// The collection of implementations of <see cref="ISearchKeywordTransformer"/>
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// The exception thrown when an attempt is made to inject a null search client provider.
     /// </exception>
     public DefaultSearchByKeywordService(
         ISearchByKeywordClientProvider searchClientProvider,
-        IEnumerable<ISearchRule>? searchRule = null)
+        IEnumerable<ISearchKeywordTransformer>? transformers = null)
     {
         _searchClientProvider = searchClientProvider ??
             throw new ArgumentNullException(nameof(searchClientProvider));
 
-        _searchRules = searchRule?.ToList() ?? [];
+        _transformers = transformers?.ToList() ?? [];
     }
 
 
@@ -80,8 +80,8 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
         ArgumentNullException.ThrowIfNull(searchOptions);
 
         searchKeyword = 
-            _searchRules
-                .Aggregate(searchKeyword, (current, rule) => rule?.ApplySearchRules(current) ?? current);
+            _transformers
+                .Aggregate(searchKeyword, (current, rule) => rule?.Apply(current) ?? current);
 
         return InvokeSearch(
             searchIndex, (searchClient) =>

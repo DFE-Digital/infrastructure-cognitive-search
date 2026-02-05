@@ -1,11 +1,11 @@
 ﻿using System.Text;
 
-namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.SearchRules;
+namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Transformer;
 
 /// <summary>
 /// Facilitates search rules to be specified when running a search
 /// </summary>
-public sealed class PartialWordMatchRule : ISearchRule
+public sealed class PartialWordMatchSearchKeywordTransformer : ISearchKeywordTransformer
 {
     private const char WildcardMatcher = '*';
     /// <summary>
@@ -13,7 +13,7 @@ public sealed class PartialWordMatchRule : ISearchRule
     /// </summary>
     /// <param name="searchKeyword"></param>
     /// <returns></returns>
-    public string ApplySearchRules(string searchKeyword)
+    public string Apply(string searchKeyword)
     {
         string normalisedSearchKeyword = searchKeyword.TrimEnd();
 

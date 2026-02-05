@@ -1,4 +1,4 @@
-﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.SearchRules;
+﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Transformer;
 using FluentAssertions;
 using Xunit;
 
@@ -10,14 +10,14 @@ public sealed class PartialWordMatchRuleTests
     [InlineData("searchKeyword", "searchKeyword*")]
     [InlineData("searchKeyword ", "searchKeyword*")]
     [InlineData("searchTerm1 searchTerm2", "searchTerm1* searchTerm2*")]
-    void ApplySearchRules_WithPartialWordMatchRuleOption_AppliesRule(string searchInput, string expected)
+    void ApplySearchKeywordTransformer_WithPartialWordMatchRuleOption_AppliesRule(string searchInput, string expected)
     {
         // arrange
 
-        PartialWordMatchRule provider = new();
+        PartialWordMatchSearchKeywordTransformer provider = new();
 
         // act
-        string searchKeywordResult = provider.ApplySearchRules(searchInput);
+        string searchKeywordResult = provider.Apply(searchInput);
 
         // assert
         searchKeywordResult.Should().Be(expected);

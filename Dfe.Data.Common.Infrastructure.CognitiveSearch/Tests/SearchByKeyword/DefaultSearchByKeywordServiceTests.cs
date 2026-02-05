@@ -41,14 +41,14 @@ public class DefaultSearchByKeywordServiceTests
     }
 
     [Fact]
-    public async Task SearchAsync_CallsSearchRule()
+    public async Task SearchAsync_CallsSearchTransformer()
     {
         // arrange
         const string searchIndex = "index1";
         const string searchKeyword = "name";
         const string searchKeywordOut = "name*";
         const string documentContentValue = "example name";
-        var mockSearchRule = PartialWordMatchRuleTestDouble.MockFor(searchKeyword, searchKeywordOut);
+        var mockSearchKeywordTransformer = PartialWordMatchSearchKeywordTransformerTestDouble.MockFor(searchKeyword, searchKeywordOut);
 
         SearchOptions searchOptions = AzureSearchOptionsTestDouble.SearchOptionsWithSearchField(It.IsAny<string>());
         var searchResults = SearchResultsTestDouble<TestDocument>.SearchResultsWith(new TestDocument() { Name = documentContentValue });
@@ -57,13 +57,13 @@ public class DefaultSearchByKeywordServiceTests
         _azureSearchClientMock.Setup(client => client.SearchAsync<TestDocument>(It.IsAny<string>(), searchOptions, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
 
-        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, [mockSearchRule]);
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, [mockSearchKeywordTransformer]);
 
         // act
         var result = (await searchService.SearchAsync<TestDocument>(searchKeyword, searchIndex, searchOptions)).Value.GetResults();
 
         // assert
-        Mock.Get(mockSearchRule).Verify(searchRuleProvider => searchRuleProvider.ApplySearchRules(searchKeyword), Times.Once);
+        Mock.Get(mockSearchKeywordTransformer).Verify(searchRuleProvider => searchRuleProvider.Apply(searchKeyword), Times.Once);
         _azureSearchClientMock.Verify(search => search.SearchAsync<TestDocument>(searchKeywordOut, It.IsAny<SearchOptions>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -76,10 +76,10 @@ public class DefaultSearchByKeywordServiceTests
         const string searchKeywordPostRulesTransformation = "name3"; 
         const string documentContentValue = "example name";
 
-        List<ISearchRule> mockSearchRules = [
-            PartialWordMatchRuleTestDouble.MockFor(searchKeyword, "name1"),
-            PartialWordMatchRuleTestDouble.MockFor("name1", "name2"),
-            PartialWordMatchRuleTestDouble.MockFor("name2", searchKeywordPostRulesTransformation),
+        List<ISearchKeywordTransformer> mockSearchKeywordTransformer = [
+            PartialWordMatchSearchKeywordTransformerTestDouble.MockFor(searchKeyword, "name1"),
+            PartialWordMatchSearchKeywordTransformerTestDouble.MockFor("name1", "name2"),
+            PartialWordMatchSearchKeywordTransformerTestDouble.MockFor("name2", searchKeywordPostRulesTransformation),
         ];
 
         SearchOptions searchOptions = AzureSearchOptionsTestDouble.SearchOptionsWithSearchField(It.IsAny<string>());
@@ -91,15 +91,15 @@ public class DefaultSearchByKeywordServiceTests
         _azureSearchClientMock.Setup(client => client.SearchAsync<TestDocument>(It.IsAny<string>(), searchOptions, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Response.FromValue(searchResults, new Mock<Response>().Object));
 
-        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, mockSearchRules);
+        var searchService = new DefaultSearchByKeywordService(_searchClientProviderMock.Object, mockSearchKeywordTransformer);
 
         // act
         var result = (await searchService.SearchAsync<TestDocument>(searchKeyword, searchIndex, searchOptions)).Value.GetResults();
 
         // assert
-        Mock.Get(mockSearchRules[0]).Verify((searchRuleProvider) => searchRuleProvider.ApplySearchRules(searchKeyword), Times.Once);
-        Mock.Get(mockSearchRules[1]).Verify((searchRuleProvider) => searchRuleProvider.ApplySearchRules("name1"), Times.Once);
-        Mock.Get(mockSearchRules[2]).Verify((searchRuleProvider) => searchRuleProvider.ApplySearchRules("name2"), Times.Once);
+        Mock.Get(mockSearchKeywordTransformer[0]).Verify((searchRuleProvider) => searchRuleProvider.Apply(searchKeyword), Times.Once);
+        Mock.Get(mockSearchKeywordTransformer[1]).Verify((searchRuleProvider) => searchRuleProvider.Apply("name1"), Times.Once);
+        Mock.Get(mockSearchKeywordTransformer[2]).Verify((searchRuleProvider) => searchRuleProvider.Apply("name2"), Times.Once);
         
         _azureSearchClientMock.Verify(search => search.SearchAsync<TestDocument>(searchKeywordPostRulesTransformation, It.IsAny<SearchOptions>(), It.IsAny<CancellationToken>()), Times.Once);
     }
