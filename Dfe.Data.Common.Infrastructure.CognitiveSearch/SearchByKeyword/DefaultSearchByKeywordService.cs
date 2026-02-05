@@ -86,7 +86,7 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
         return InvokeSearch(
             searchIndex, async (searchClient) =>
                 await searchClient.SearchAsync<TSearchResult>(
-                    searchKeyword, searchOptions));
+                    searchKeyword, searchOptions).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -113,6 +113,6 @@ public sealed class DefaultSearchByKeywordService : ISearchByKeywordService
 
         SearchClient client = await _searchClientProvider.InvokeSearchClientAsync(searchIndex);
 
-        return await searchAction(client);
+        return await searchAction(client).ConfigureAwait(false);
     }
 }
