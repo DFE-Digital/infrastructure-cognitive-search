@@ -11,7 +11,7 @@ using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByGeoLocation.Provide
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Options;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
-using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.SearchRules;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Transformer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -49,7 +49,7 @@ public static class CompositionRoot
         services.TryAddSingleton<ISearchByKeywordClientProvider, SearchByKeywordClientProvider>();
         services.TryAddSingleton<ISearchIndexNamesProvider, SearchIndexNamesProvider>();
         services.TryAddSingleton<ISearchByKeywordService, DefaultSearchByKeywordService>();
-        services.TryAddSingleton<ISearchRule, PartialWordMatchRule>();
+        services.TryAddSingleton<ISearchKeywordTransformer, PartialWordMatchSearchKeywordTransformer>();
 
         services.AddOptions<AzureSearchConnectionOptions>()
             .Bind(configuration.GetSection(nameof(AzureSearchConnectionOptions)))
