@@ -7,6 +7,7 @@ namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.SearchR
 /// </summary>
 public sealed class PartialWordMatchRule : ISearchRule
 {
+    private const char WildcardMatcher = '*';
     /// <summary>
     /// Apply search rules as specified in the options
     /// </summary>
@@ -14,9 +15,22 @@ public sealed class PartialWordMatchRule : ISearchRule
     /// <returns></returns>
     public string ApplySearchRules(string searchKeyword)
     {
-        return new StringBuilder(searchKeyword.TrimEnd())
-            .Replace(" ", "* ")
-            .Append('*')
+        string normalisedSearchKeyword = searchKeyword.TrimEnd();
+
+        // idempotant
+        if (normalisedSearchKeyword.EndsWith(WildcardMatcher))
+        {
+            return searchKeyword;
+        }
+
+        return ApplyWildcardToKeyword(normalisedSearchKeyword);
+    }
+
+    private static string ApplyWildcardToKeyword(string input)
+    {
+        return new StringBuilder(input)
+            .Replace(" ", $"{WildcardMatcher} ")
+            .Append(WildcardMatcher)
             .ToString();
     }
 }
