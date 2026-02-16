@@ -1,4 +1,5 @@
-﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
+﻿using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.IndexNames.Providers;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.Search.TestDoubles;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.Tests.SearchByKeyword.TestDoubles.StubBuilders;
 using FluentAssertions;

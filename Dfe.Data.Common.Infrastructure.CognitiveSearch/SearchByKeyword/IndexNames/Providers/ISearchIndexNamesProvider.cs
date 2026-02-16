@@ -1,4 +1,4 @@
-﻿namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
+﻿namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.IndexNames.Providers;
 
 /// <summary>
 /// Provides the contract by which to derive all the configured

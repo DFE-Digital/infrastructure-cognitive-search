@@ -3,14 +3,14 @@ using Azure.Search.Documents.Indexes;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Options;
 using Microsoft.Extensions.Options;
 
-namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
+namespace Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.IndexNames.Providers;
 
 /// <summary>
 /// Provides the means by which to derive all the configured
 /// indexes under which to search, established under configuration.
 /// accessible by index name.
 /// </summary>
-public sealed class SearchIndexNamesProvider : ISearchIndexNamesProvider
+public sealed class AzureRemoteSearchIndexNamesProvider : ISearchIndexNamesProvider
 {
     private readonly AzureSearchConnectionOptions _azureSearchOptions;
 
@@ -23,7 +23,7 @@ public sealed class SearchIndexNamesProvider : ISearchIndexNamesProvider
     /// Configuration options used to define the internal Azure
     /// cognitive search service credentials and Uri endpoint.
     /// </param>
-    public SearchIndexNamesProvider(IOptions<AzureSearchConnectionOptions> azureSearchOptions)
+    public AzureRemoteSearchIndexNamesProvider(IOptions<AzureSearchConnectionOptions> azureSearchOptions)
     {
         ArgumentNullException.ThrowIfNull(azureSearchOptions);
 
