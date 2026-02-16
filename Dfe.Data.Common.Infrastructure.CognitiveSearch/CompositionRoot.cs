@@ -9,12 +9,15 @@ using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByGeoLocation;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByGeoLocation.Options;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByGeoLocation.Providers;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.IndexNames.Options;
+using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.IndexNames.Providers;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Options;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Providers;
 using Dfe.Data.Common.Infrastructure.CognitiveSearch.SearchByKeyword.Transformer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace Dfe.Data.Common.Infrastructure.CognitiveSearch;
 
@@ -47,7 +50,7 @@ public static class CompositionRoot
         }
 
         services.TryAddSingleton<ISearchByKeywordClientProvider, SearchByKeywordClientProvider>();
-        services.TryAddSingleton<ISearchIndexNamesProvider, SearchIndexNamesProvider>();
+        services.TryAddSingleton<ISearchIndexNamesProvider, AzureRemoteSearchIndexNamesProvider>();
         services.TryAddSingleton<ISearchByKeywordService, DefaultSearchByKeywordService>();
         services.TryAddSingleton<ISearchKeywordTransformer, PartialWordMatchSearchKeywordTransformer>();
 
@@ -55,6 +58,35 @@ public static class CompositionRoot
             .Bind(configuration.GetSection(nameof(AzureSearchConnectionOptions)))
             .ValidateDataAnnotations()
             .ValidateOnStart();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddAzureIndexNamesConfigurationProvider(this IServiceCollection services, IConfiguration configuration)
+    {
+        if (services is null)
+        {
+            throw new ArgumentNullException(nameof(services),
+                "A service collection is required to configure the azure cognitive search dependencies.");
+        }
+
+        services.RemoveAll<ISearchIndexNamesProvider>();
+
+        services
+            .AddOptions<SearchIndexNamesOptions>()
+            .Bind(configuration.GetSection(nameof(SearchIndexNamesOptions)));
+
+        services.AddSingleton(
+            (sp) =>
+                sp.GetRequiredService<IOptions<SearchIndexNamesOptions>>().Value);
+
+        services.TryAddSingleton<ISearchIndexNamesProvider, AzureConfigurationSearchIndexNamesProvider>();
+
+        return services;
     }
 
     /// <summary>
